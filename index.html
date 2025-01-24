@@ -3,50 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klickspiel</title>
+    <title>Spielemenü</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 20px;
         }
-        #spielbereich {
-            margin: 20px auto;
-            padding: 20px;
-            border: 2px solid #4CAF50;
-            display: inline-block;
-            background-color: #f9f9f9;
+        #menü {
+            margin-bottom: 20px;
         }
-        #knopf {
+        button {
             padding: 10px 20px;
-            font-size: 18px;
+            margin: 5px;
+            font-size: 16px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            cursor: pointer;
             border-radius: 5px;
+            cursor: pointer;
         }
-        #knopf:hover {
+        button:hover {
             background-color: #45a049;
+        }
+        .spielbereich {
+            display: none;
+        }
+        .spielbereich.aktiv {
+            display: block;
+        }
+        .tic-tac-toe {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+            justify-content: center;
+            margin: 20px auto;
+        }
+        .feld {
+            width: 100px;
+            height: 100px;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #f9f9f9;
+            border: 2px solid #4CAF50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .feld:hover {
+            background-color: #e8f5e9;
         }
     </style>
 </head>
 <body>
-    <h1>Klickspiel</h1>
-    <p>Klicke auf den Button, um Punkte zu sammeln!</p>
-    <div id="spielbereich">
-        <button id="knopf">Klicken!</button>
-        <p>Punkte: <span id="punkte">0</span></p>
+    <h1>Spielemenü</h1>
+    <div id="menü">
+        <button onclick="zeigeSpiel('spiel1')">Klickspiel</button>
+        <button onclick="zeigeSpiel('spiel2')">Besucherzähler</button>
+        <button onclick="zeigeSpiel('spiel3')">Tic Tac Toe</button>
+    </div>
+
+    <!-- Spiel 1: Klickspiel -->
+    <div id="spiel1" class="spielbereich">
+        <h2>Klickspiel</h2>
+        <p>Klicke auf den Button, um Punkte zu sammeln!</p>
+        <button id="klickKnopf">Klicken!</button>
+        <p>Punkte: <span id="klickPunkte">0</span></p>
+        <script>
+            let klickPunkte = 0;
+            const klickKnopf = document.getElementById("klickKnopf");
+            const klickAnzeige = document.getElementById("klickPunkte");
+
+            klickKnopf.addEventListener("click", () => {
+                klickPunkte++;
+                klickAnzeige.textContent = klickPunkte;
+            });
+        </script>
+    </div>
+
+    <!-- Spiel 2: Besucherzähler -->
+    <div id="spiel2" class="spielbereich">
+        <h2>Besucherzähler</h2>
+        <p>Du bist Besucher Nummer:</p>
+        <p id="besucherCounter">0</p>
+        <script>
+            let besucherZahl = localStorage.getItem("besucherZaehler");
+            if (!besucherZahl) besucherZahl = 0;
+            besucherZahl++;
+            localStorage.setItem("besucherZaehler", besucherZahl);
+            document.getElementById("besucherCounter").textContent = besucherZahl;
+        </script>
+    </div>
+
+    <!-- Spiel 3: Tic Tac Toe -->
+    <div id="spiel3" class="spielbereich">
+        <h2>Tic Tac Toe</h2>
+        <div class="tic-tac-toe" id="ticTacToe">
+            <div class="feld" data-index="0"></div>
+            <div class="feld" data-index="1"></div>
+            <div class="feld" data-index="2"></div>
+            <div class="feld" data-index="3"></div>
+            <div class="feld" data-index="4"></div>
+            <div class="feld" data-index="5"></div>
+            <div class="feld" data-index="6"></div>
+            <div class="feld" data-index="7"></div>
+            <div class="feld" data-index="8"></div>
+        </div>
+        <p id="spielStatus">Du bist am Zug!</p>
     </div>
 
     <script>
-        let punkte = 0;
-        const punkteAnzeige = document.getElementById("punkte");
-        const knopf = document.getElementById("knopf");
+        // Funktion, um Spiele umzuschalten
+        function zeigeSpiel(spielId) {
+            const spiele = document.querySelectorAll('.spielbereich');
+            spiele.forEach(spiel => spiel.classList.remove('aktiv'));
+            document.getElementById(spielId).classList.add('aktiv');
+        }
+        zeigeSpiel('spiel1'); // Standardmäßig das Klickspiel anzeigen
 
-        knopf.addEventListener("click", () => {
-            punkte++;
-            punkteAnzeige.textContent = punkte;
+        // Tic Tac Toe Logik
+        const ticTacToeFelder = document.querySelectorAll('.feld');
+        const spielStatus = document.getElementById("spielStatus");
+        let spielfeld = ["", "", "", "", "", "", "", "", ""];
+        let spielerAmZug = true; // Spieler = true, KI = false
+        const gewinnKombinationen = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Reihen
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Spalten
+            [0, 4, 8], [2, 4, 6]            // Diagonalen
+        ];
+
+        function überprüfeGewinner() {
+            for (const kombi of gewinnKombinationen) {
+                const [a, b, c] = kombi;
+                if (spielfeld[a] && spielfeld[a] === spielfeld[b] && spielfeld[a] === spielfeld[c]) {
+                    return spielfeld[a];
+                }
+            }
+            return spielfeld.includes("") ? null : "Unentschieden";
+        }
+
+        function kiZug() {
+            let leereFelder = spielfeld.map((feld, index) => feld === "" ? index : null).filter(index => index !== null);
+            let zufälligerZug = leereFelder[Math.floor(Math.random() * leereFelder.length)];
+            spielfeld[zufälligerZug] = "O";
+            ticTacToeFelder[zufälligerZug].textContent = "O";
+            ticTacToeFelder[zufälligerZug].style.pointerEvents = "none";
+            let ergebnis = überprüfeGewinner();
+            if (ergebnis) {
+                spielStatus.textContent = ergebnis === "Unentschieden" ? "Unentschieden!" : `Spieler ${ergebnis} gewinnt!`;
+                ticTacToeFelder.forEach(feld => feld.style.pointerEvents = "none");
+            } else {
+                spielerAmZug = true;
+                spielStatus.textContent = "Du bist am Zug!";
+            }
+        }
+
+        ticTacToeFelder.forEach((feld, index) => {
+            feld.addEventListener("click", () => {
+                if (spielfeld[index] === "" && spielerAmZug) {
+                    spielfeld[index] = "X";
+                    feld.textContent = "X";
+                    feld.style.pointerEvents = "none";
+                    let ergebnis = überprüfeGewinner();
+                    if (ergebnis) {
+                        spielStatus.textContent = ergebnis === "Unentschieden" ? "Unentschieden!" : `Spieler ${ergebnis} gewinnt!`;
+                        ticTacToeFelder.forEach(feld => feld.style.pointerEvents = "none");
+                    } else {
+                        spielerAmZug = false;
+                        spielStatus.textContent = "KI ist am Zug...";
+                        setTimeout(kiZug, 1000);
+                    }
+                }
+            });
         });
     </script>
 </body>
