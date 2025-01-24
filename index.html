@@ -10,9 +10,11 @@
             text-align: center;
             margin: 20px;
         }
+
         #menü {
             margin-bottom: 20px;
         }
+
         button {
             padding: 10px 20px;
             margin: 5px;
@@ -23,15 +25,19 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
         button:hover {
             background-color: #45a049;
         }
+
         .spielbereich {
             display: none;
         }
+
         .spielbereich.aktiv {
             display: block;
         }
+
         .tic-tac-toe {
             display: grid;
             grid-template-columns: repeat(3, 100px);
@@ -39,6 +45,7 @@
             justify-content: center;
             margin: 20px auto;
         }
+
         .feld {
             width: 100px;
             height: 100px;
@@ -51,34 +58,33 @@
             justify-content: center;
             cursor: pointer;
         }
+
         .feld:hover {
             background-color: #e8f5e9;
+        }
+
+        iframe {
+            border: none;
         }
     </style>
 </head>
 <body>
     <h1>Spielemenü</h1>
     <div id="menü">
-        <button onclick="zeigeSpiel('spiel1')">Klickspiel</button>
-        <button onclick="zeigeSpiel('spiel2')">Besucherzähler</button>
-        <button onclick="zeigeSpiel('spiel3')">Tic Tac Toe</button>
-        <button onclick="zeigeSpiel('spiel4')">Zahlenraten</button>
-        <button onclick="zeigeSpiel('spiel5')">Reaktionsspiel</button>
+        <button onclick="zeigeSpiel('spiel1')" aria-label="Klickspiel öffnen">Klickspiel</button>
+        <button onclick="zeigeSpiel('spiel2')" aria-label="Besucherzähler öffnen">Besucherzähler</button>
+        <button onclick="zeigeSpiel('spiel3')" aria-label="Tic Tac Toe öffnen">Tic Tac Toe</button>
+        <button onclick="zeigeSpiel('spiel4')" aria-label="Zahlenraten öffnen">Zahlenraten</button>
+        <button onclick="zeigeSpiel('spiel5')" aria-label="Reaktionsspiel öffnen">Reaktionsspiel</button>
+        <button onclick="zeigeSpiel('spiel6')" aria-label="Dino-Spiel öffnen">Dino-Spiel</button>
     </div>
 
     <!-- Spiel 1: Klickspiel -->
     <div id="spiel1" class="spielbereich">
         <h2>Klickspiel</h2>
         <p>Klicke auf den Button, um Punkte zu sammeln!</p>
-        <button id="klickKnopf">Klicken!</button>
+        <button id="klickKnopf" aria-label="Punkte sammeln">Klicken!</button>
         <p>Punkte: <span id="klickPunkte">0</span></p>
-        <script>
-            let klickPunkte = 0;
-            document.getElementById("klickKnopf").addEventListener("click", () => {
-                klickPunkte++;
-                document.getElementById("klickPunkte").textContent = klickPunkte;
-            });
-        </script>
     </div>
 
     <!-- Spiel 2: Besucherzähler -->
@@ -86,12 +92,6 @@
         <h2>Besucherzähler</h2>
         <p>Du bist Besucher Nummer:</p>
         <p id="besucherCounter">0</p>
-        <script>
-            let besucherZahl = localStorage.getItem("besucherZaehler") || 0;
-            besucherZahl++;
-            localStorage.setItem("besucherZaehler", besucherZahl);
-            document.getElementById("besucherCounter").textContent = besucherZahl;
-        </script>
     </div>
 
     <!-- Spiel 3: Tic Tac Toe -->
@@ -109,70 +109,5 @@
             <div class="feld" data-index="8"></div>
         </div>
         <p id="spielStatus">Du bist am Zug!</p>
-    </div>
-
-    <!-- Spiel 4: Zahlenraten -->
-    <div id="spiel4" class="spielbereich">
-        <h2>Zahlenraten</h2>
-        <p>Rate die Zahl zwischen 1 und 100!</p>
-        <input type="number" id="zahlenInput" placeholder="Deine Zahl">
-        <button onclick="rateZahl()">Raten</button>
-        <p id="zahlenFeedback"></p>
-        <script>
-            const zufallsZahl = Math.floor(Math.random() * 100) + 1;
-            function rateZahl() {
-                const eingabe = parseInt(document.getElementById("zahlenInput").value);
-                const feedback = document.getElementById("zahlenFeedback");
-                if (eingabe === zufallsZahl) {
-                    feedback.textContent = "Richtig! Du hast die Zahl erraten!";
-                } else if (eingabe < zufallsZahl) {
-                    feedback.textContent = "Zu niedrig! Versuch es nochmal.";
-                } else {
-                    feedback.textContent = "Zu hoch! Versuch es nochmal.";
-                }
-            }
-        </script>
-    </div>
-
-    <!-- Spiel 5: Reaktionsspiel -->
-    <div id="spiel5" class="spielbereich">
-        <h2>Reaktionsspiel</h2>
-        <p>Drücke den Button so schnell wie möglich, wenn er grün wird!</p>
-        <button id="reaktionsKnopf" disabled>Warte...</button>
-        <p id="reaktionsZeit">Reaktionszeit: --- ms</p>
-        <script>
-            let startZeit;
-            const reaktionsKnopf = document.getElementById("reaktionsKnopf");
-            const reaktionsZeit = document.getElementById("reaktionsZeit");
-
-            function starteReaktionstest() {
-                reaktionsKnopf.disabled = true;
-                reaktionsKnopf.textContent = "Warte...";
-                const zufälligeZeit = Math.random() * 3000 + 2000;
-                setTimeout(() => {
-                    startZeit = Date.now();
-                    reaktionsKnopf.disabled = false;
-                    reaktionsKnopf.textContent = "Klick!";
-                }, zufälligeZeit);
-            }
-
-            reaktionsKnopf.addEventListener("click", () => {
-                const dauer = Date.now() - startZeit;
-                reaktionsZeit.textContent = `Reaktionszeit: ${dauer} ms`;
-                starteReaktionstest();
-            });
-
-            starteReaktionstest();
-        </script>
-    </div>
-
-    <script>
-        // Funktion, um Spiele umzuschalten
-        function zeigeSpiel(spielId) {
-            document.querySelectorAll('.spielbereich').forEach(spiel => spiel.classList.remove('aktiv'));
-            document.getElementById(spielId).classList.add('aktiv');
-        }
-        zeigeSpiel('spiel1'); // Standardmäßig das Klickspiel anzeigen
-    </script>
-</body>
-</html>
+    </
+        
