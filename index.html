@@ -1,1 +1,53 @@
-hallo welt
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klickspiel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        #spielbereich {
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px solid #4CAF50;
+            display: inline-block;
+            background-color: #f9f9f9;
+        }
+        #knopf {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #knopf:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Klickspiel</h1>
+    <p>Klicke auf den Button, um Punkte zu sammeln!</p>
+    <div id="spielbereich">
+        <button id="knopf">Klicken!</button>
+        <p>Punkte: <span id="punkte">0</span></p>
+    </div>
+
+    <script>
+        let punkte = 0;
+        const punkteAnzeige = document.getElementById("punkte");
+        const knopf = document.getElementById("knopf");
+
+        knopf.addEventListener("click", () => {
+            punkte++;
+            punkteAnzeige.textContent = punkte;
+        });
+    </script>
+</body>
+</html>
