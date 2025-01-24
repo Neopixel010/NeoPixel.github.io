@@ -62,6 +62,8 @@
         <button onclick="zeigeSpiel('spiel1')">Klickspiel</button>
         <button onclick="zeigeSpiel('spiel2')">Besucherzähler</button>
         <button onclick="zeigeSpiel('spiel3')">Tic Tac Toe</button>
+        <button onclick="zeigeSpiel('spiel4')">Zahlenraten</button>
+        <button onclick="zeigeSpiel('spiel5')">Reaktionsspiel</button>
     </div>
 
     <!-- Spiel 1: Klickspiel -->
@@ -72,12 +74,9 @@
         <p>Punkte: <span id="klickPunkte">0</span></p>
         <script>
             let klickPunkte = 0;
-            const klickKnopf = document.getElementById("klickKnopf");
-            const klickAnzeige = document.getElementById("klickPunkte");
-
-            klickKnopf.addEventListener("click", () => {
+            document.getElementById("klickKnopf").addEventListener("click", () => {
                 klickPunkte++;
-                klickAnzeige.textContent = klickPunkte;
+                document.getElementById("klickPunkte").textContent = klickPunkte;
             });
         </script>
     </div>
@@ -88,8 +87,7 @@
         <p>Du bist Besucher Nummer:</p>
         <p id="besucherCounter">0</p>
         <script>
-            let besucherZahl = localStorage.getItem("besucherZaehler");
-            if (!besucherZahl) besucherZahl = 0;
+            let besucherZahl = localStorage.getItem("besucherZaehler") || 0;
             besucherZahl++;
             localStorage.setItem("besucherZaehler", besucherZahl);
             document.getElementById("besucherCounter").textContent = besucherZahl;
@@ -113,70 +111,68 @@
         <p id="spielStatus">Du bist am Zug!</p>
     </div>
 
+    <!-- Spiel 4: Zahlenraten -->
+    <div id="spiel4" class="spielbereich">
+        <h2>Zahlenraten</h2>
+        <p>Rate die Zahl zwischen 1 und 100!</p>
+        <input type="number" id="zahlenInput" placeholder="Deine Zahl">
+        <button onclick="rateZahl()">Raten</button>
+        <p id="zahlenFeedback"></p>
+        <script>
+            const zufallsZahl = Math.floor(Math.random() * 100) + 1;
+            function rateZahl() {
+                const eingabe = parseInt(document.getElementById("zahlenInput").value);
+                const feedback = document.getElementById("zahlenFeedback");
+                if (eingabe === zufallsZahl) {
+                    feedback.textContent = "Richtig! Du hast die Zahl erraten!";
+                } else if (eingabe < zufallsZahl) {
+                    feedback.textContent = "Zu niedrig! Versuch es nochmal.";
+                } else {
+                    feedback.textContent = "Zu hoch! Versuch es nochmal.";
+                }
+            }
+        </script>
+    </div>
+
+    <!-- Spiel 5: Reaktionsspiel -->
+    <div id="spiel5" class="spielbereich">
+        <h2>Reaktionsspiel</h2>
+        <p>Drücke den Button so schnell wie möglich, wenn er grün wird!</p>
+        <button id="reaktionsKnopf" disabled>Warte...</button>
+        <p id="reaktionsZeit">Reaktionszeit: --- ms</p>
+        <script>
+            let startZeit;
+            const reaktionsKnopf = document.getElementById("reaktionsKnopf");
+            const reaktionsZeit = document.getElementById("reaktionsZeit");
+
+            function starteReaktionstest() {
+                reaktionsKnopf.disabled = true;
+                reaktionsKnopf.textContent = "Warte...";
+                const zufälligeZeit = Math.random() * 3000 + 2000;
+                setTimeout(() => {
+                    startZeit = Date.now();
+                    reaktionsKnopf.disabled = false;
+                    reaktionsKnopf.textContent = "Klick!";
+                }, zufälligeZeit);
+            }
+
+            reaktionsKnopf.addEventListener("click", () => {
+                const dauer = Date.now() - startZeit;
+                reaktionsZeit.textContent = `Reaktionszeit: ${dauer} ms`;
+                starteReaktionstest();
+            });
+
+            starteReaktionstest();
+        </script>
+    </div>
+
     <script>
         // Funktion, um Spiele umzuschalten
         function zeigeSpiel(spielId) {
-            const spiele = document.querySelectorAll('.spielbereich');
-            spiele.forEach(spiel => spiel.classList.remove('aktiv'));
+            document.querySelectorAll('.spielbereich').forEach(spiel => spiel.classList.remove('aktiv'));
             document.getElementById(spielId).classList.add('aktiv');
         }
         zeigeSpiel('spiel1'); // Standardmäßig das Klickspiel anzeigen
-
-        // Tic Tac Toe Logik
-        const ticTacToeFelder = document.querySelectorAll('.feld');
-        const spielStatus = document.getElementById("spielStatus");
-        let spielfeld = ["", "", "", "", "", "", "", "", ""];
-        let spielerAmZug = true; // Spieler = true, KI = false
-        const gewinnKombinationen = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Reihen
-            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Spalten
-            [0, 4, 8], [2, 4, 6]            // Diagonalen
-        ];
-
-        function überprüfeGewinner() {
-            for (const kombi of gewinnKombinationen) {
-                const [a, b, c] = kombi;
-                if (spielfeld[a] && spielfeld[a] === spielfeld[b] && spielfeld[a] === spielfeld[c]) {
-                    return spielfeld[a];
-                }
-            }
-            return spielfeld.includes("") ? null : "Unentschieden";
-        }
-
-        function kiZug() {
-            let leereFelder = spielfeld.map((feld, index) => feld === "" ? index : null).filter(index => index !== null);
-            let zufälligerZug = leereFelder[Math.floor(Math.random() * leereFelder.length)];
-            spielfeld[zufälligerZug] = "O";
-            ticTacToeFelder[zufälligerZug].textContent = "O";
-            ticTacToeFelder[zufälligerZug].style.pointerEvents = "none";
-            let ergebnis = überprüfeGewinner();
-            if (ergebnis) {
-                spielStatus.textContent = ergebnis === "Unentschieden" ? "Unentschieden!" : `Spieler ${ergebnis} gewinnt!`;
-                ticTacToeFelder.forEach(feld => feld.style.pointerEvents = "none");
-            } else {
-                spielerAmZug = true;
-                spielStatus.textContent = "Du bist am Zug!";
-            }
-        }
-
-        ticTacToeFelder.forEach((feld, index) => {
-            feld.addEventListener("click", () => {
-                if (spielfeld[index] === "" && spielerAmZug) {
-                    spielfeld[index] = "X";
-                    feld.textContent = "X";
-                    feld.style.pointerEvents = "none";
-                    let ergebnis = überprüfeGewinner();
-                    if (ergebnis) {
-                        spielStatus.textContent = ergebnis === "Unentschieden" ? "Unentschieden!" : `Spieler ${ergebnis} gewinnt!`;
-                        ticTacToeFelder.forEach(feld => feld.style.pointerEvents = "none");
-                    } else {
-                        spielerAmZug = false;
-                        spielStatus.textContent = "KI ist am Zug...";
-                        setTimeout(kiZug, 1000);
-                    }
-                }
-            });
-        });
     </script>
 </body>
 </html>
