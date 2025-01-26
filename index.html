@@ -1,235 +1,139 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Galaxy Spiele</title>
-  <style>
-    /* Galaxy-Style */
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(120deg, #000428, #004e92);
-      color: white;
-      text-align: center;
-      overflow-x: hidden;
-    }
-
-    h1 {
-      margin-top: 20px;
-      font-size: 3rem;
-      color: #ffcc00;
-      text-shadow: 0 0 10px #ffcc00, 0 0 20px #ff7700;
-    }
-
-    nav {
-      position: sticky;
-      top: 0;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 1000;
-      padding: 10px 0;
-      box-shadow: 0 0 10px #000;
-    }
-
-    nav ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-    }
-
-    nav ul li {
-      display: inline;
-    }
-
-    nav ul li a {
-      color: #ffcc00;
-      text-decoration: none;
-      font-size: 1.2rem;
-      padding: 5px 15px;
-      transition: all 0.3s;
-    }
-
-    nav ul li a:hover {
-      color: #fff;
-      background: #ff7700;
-      border-radius: 5px;
-    }
-
-    .game-container {
-      padding: 20px;
-    }
-
-    .game {
-      margin: 40px auto;
-      max-width: 600px;
-      background: rgba(0, 0, 0, 0.8);
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 0 15px #ff7700;
-    }
-
-    canvas {
-      display: block;
-      margin: 20px auto;
-      background: #222;
-      border: 2px solid #ffcc00;
-      border-radius: 10px;
-    }
-
-    button {
-      background: #ff7700;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 1rem;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: all 0.2s;
-    }
-
-    button:hover {
-      background: #ffcc00;
-      color: #000;
-    }
-
-    footer {
-      margin-top: 40px;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.5);
-      font-size: 0.9rem;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Spiel mit Menü, Login und Besucherzähler</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #444;
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+        }
+        nav a:hover {
+            background-color: #666;
+            border-radius: 5px;
+        }
+        #login-container, #spiel-container {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 500px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        #besucherzaehler {
+            text-align: center;
+            margin: 10px 0;
+            color: #333;
+        }
+        button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <h1>Galaxy Spiele</h1>
+    <header>
+        <h1>Willkommen auf unserer Seite</h1>
+    </header>
+    <nav>
+        <a href="#spiel">Spiel</a>
+        <a href="#login">Login</a>
+    </nav>
 
-  <!-- Navigationsmenü -->
-  <nav>
-    <ul>
-      <li><a href="#snake">Snake</a></li>
-      <li><a href="#tic-tac-toe">Tic Tac Toe</a></li>
-      <li><a href="#memory">Memory</a></li>
-    </ul>
-  </nav>
+    <!-- Besucherzähler -->
+    <div id="besucherzaehler">
+        Besucher: <span id="counter">0</span>
+    </div>
 
-  <div class="game-container">
-    <!-- Snake -->
-    <div id="snake" class="game">
-      <h2>Snake</h2>
-      <canvas id="snakeCanvas" width="400" height="400"></canvas>
-      <button onclick="startSnake()">Spiel starten</button>
-      <script>
-        // Snake-Spiel
-        const canvas = document.getElementById('snakeCanvas');
-        const ctx = canvas.getContext('2d');
-        const grid = 20;
-        let snake = [{ x: grid * 5, y: grid * 5 }];
-        let apple = { x: grid * 10, y: grid * 10 };
-        let direction = { x: 0, y: 0 };
-        let running = false;
+    <!-- Login-System -->
+    <div id="login-container">
+        <h2>Login</h2>
+        <form id="login-form">
+            <label for="username">Benutzername:</label><br>
+            <input type="text" id="username" name="username" required><br><br>
+            <label for="password">Passwort:</label><br>
+            <input type="password" id="password" name="password" required><br><br>
+            <button type="submit">Einloggen</button>
+        </form>
+        <p id="login-message" class="hidden"></p>
+    </div>
 
-        function drawSnake() {
-          ctx.fillStyle = '#00ff00';
-          snake.forEach(part => {
-            ctx.fillRect(part.x, part.y, grid, grid);
-          });
-        }
+    <!-- Spiel -->
+    <div id="spiel-container">
+        <h2>Spiel: Klick auf den Button!</h2>
+        <button id="spiel-button">Klick mich!</button>
+        <p id="spiel-score">Dein Score: <span id="score">0</span></p>
+    </div>
 
-        function drawApple() {
-          ctx.fillStyle = '#ff0000';
-          ctx.fillRect(apple.x, apple.y, grid, grid);
-        }
+    <script>
+        // Besucherzähler
+        const counterElement = document.getElementById('counter');
+        let counter = localStorage.getItem('besucherzaehler') || 0;
+        counter++;
+        localStorage.setItem('besucherzaehler', counter);
+        counterElement.textContent = counter;
 
-        function updateSnake() {
-          if (!running) return;
-          const head = { x: snake[0].x + direction.x * grid, y: snake[0].y + direction.y * grid };
+        // Login-System
+        const loginForm = document.getElementById('login-form');
+        const loginMessage = document.getElementById('login-message');
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Verhindert Seiten-Reload
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-          // Check Kollision
-          if (head.x < 0 || head.y < 0 || head.x >= canvas.width || head.y >= canvas.height || 
-              snake.some(part => part.x === head.x && part.y === head.y)) {
-            running = false;
-            alert('Spiel vorbei!');
-            return;
-          }
-
-          snake.unshift(head);
-          if (head.x === apple.x && head.y === apple.y) {
-            apple = { x: Math.floor(Math.random() * 20) * grid, y: Math.floor(Math.random() * 20) * grid };
-          } else {
-            snake.pop();
-          }
-        }
-
-        function gameLoop() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          drawSnake();
-          drawApple();
-          updateSnake();
-          if (running) requestAnimationFrame(gameLoop);
-        }
-
-        function startSnake() {
-          running = true;
-          direction = { x: 0, y: -1 };
-          snake = [{ x: grid * 5, y: grid * 5 }];
-          apple = { x: grid * 10, y: grid * 10 };
-          gameLoop();
-        }
-
-        window.addEventListener('keydown', e => {
-          const keyMap = { ArrowUp: { x: 0, y: -1 }, ArrowDown: { x: 0, y: 1 }, ArrowLeft: { x: -1, y: 0 }, ArrowRight: { x: 1, y: 0 } };
-          if (keyMap[e.key] && !(keyMap[e.key].x === -direction.x && keyMap[e.key].y === -direction.y)) {
-            direction = keyMap[e.key];
-          }
+            // Einfache Authentifizierung
+            if (username === 'admin' && password === '1234') {
+                loginMessage.textContent = 'Login erfolgreich! Willkommen, ' + username + '!';
+                loginMessage.style.color = 'green';
+                loginMessage.classList.remove('hidden');
+            } else {
+                loginMessage.textContent = 'Login fehlgeschlagen! Versuche es erneut.';
+                loginMessage.style.color = 'red';
+                loginMessage.classList.remove('hidden');
+            }
         });
-      </script>
-    </div>
 
-    <!-- Tic Tac Toe -->
-    <div id="tic-tac-toe" class="game">
-      <h2>Tic Tac Toe</h2>
-      <div id="ticTacToeBoard" style="display: grid; grid-template-columns: repeat(3, 100px); gap: 5px; margin: auto;">
-        <script>
-          const ticTacToeBoard = document.getElementById('ticTacToeBoard');
-          const cells = Array.from({ length: 9 }, (_, i) => {
-            const cell = document.createElement('div');
-            cell.style.width = '100px';
-            cell.style.height = '100px';
-            cell.style.background = '#444';
-            cell.style.color = 'white';
-            cell.style.fontSize = '2rem';
-            cell.style.textAlign = 'center';
-            cell.style.lineHeight = '100px';
-            cell.style.cursor = 'pointer';
-            cell.setAttribute('data-index', i);
-            ticTacToeBoard.appendChild(cell);
-            return cell;
-          });
+        // Spiel
+        const spielButton = document.getElementById('spiel-button');
+        const scoreElement = document.getElementById('score');
+        let score = 0;
 
-          let currentPlayer = 'X';
-          const boardState = Array(9).fill(null);
-
-          cells.forEach(cell => {
-            cell.addEventListener('click', () => {
-              const index = cell.getAttribute('data-index');
-              if (!boardState[index]) {
-                boardState[index] = currentPlayer;
-                cell.textContent = currentPlayer;
-                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-              }
-            });
-          });
-        </script>
-      </div>
-    </div>
-  </div>
-
-  <footer>
-    © 2025 Galaxy Spiele - Alle Rechte vorbehalten.
-  </footer>
+        spielButton.addEventListener('click', function() {
+            score++;
+            scoreElement.textContent = score;
+        });
+    </script>
 </body>
 </html>
