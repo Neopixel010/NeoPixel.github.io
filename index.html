@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin-Dashboard mit Benutzerverwaltung</title>
+    <title>Admin-Dashboard mit E-Mail-Funktion</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,7 +34,7 @@
             background-color: #666;
             border-radius: 5px;
         }
-        #login-container, #user-management, #editor-container, #stats-container {
+        #login-container, #user-management, #password-change-container {
             margin: 20px auto;
             padding: 20px;
             max-width: 800px;
@@ -69,14 +69,22 @@
         button:hover {
             background-color: #555;
         }
+        input[type="email"], input[type="text"], select {
+            padding: 8px;
+            width: 100%;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>Admin-Dashboard</h1>
+        <h1>Admin-Dashboard mit E-Mail</h1>
     </header>
     <nav>
         <a href="#users">Benutzerverwaltung</a>
+        <a href="#password-change">Passwort ändern</a>
         <a href="#logout" id="logout-button">Abmelden</a>
     </nav>
 
@@ -100,7 +108,9 @@
             <thead>
                 <tr>
                     <th>Benutzername</th>
+                    <th>E-Mail</th>
                     <th>Rolle</th>
+                    <th>Status</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
@@ -113,6 +123,8 @@
         <form id="add-user-form">
             <label for="new-username">Benutzername:</label>
             <input type="text" id="new-username" required>
+            <label for="new-email">E-Mail:</label>
+            <input type="email" id="new-email" required>
             <label for="new-role">Rolle:</label>
             <select id="new-role">
                 <option value="Benutzer">Benutzer</option>
@@ -123,95 +135,126 @@
         </form>
     </div>
 
+    <!-- Passwort ändern -->
+    <div id="password-change-container" class="hidden">
+        <h2>Passwort ändern</h2>
+        <form id="password-change-form">
+            <label for="current-password">Aktuelles Passwort:</label>
+            <input type="password" id="current-password" required>
+            <label for="new-password">Neues Passwort:</label>
+            <input type="password" id="new-password" required>
+            <button type="submit">Passwort ändern</button>
+        </form>
+        <p id="password-change-message" class="hidden"></p>
+    </div>
+
     <script>
-        // Login-System
         const loginForm = document.getElementById('login-form');
         const loginMessage = document.getElementById('login-message');
         const userManagement = document.getElementById('user-management');
+        const passwordChangeContainer = document.getElementById('password-change-container');
         const logoutButton = document.getElementById('logout-button');
 
-        // Benutzerverwaltung
         const userTable = document.getElementById('user-table');
         const addUserForm = document.getElementById('add-user-form');
         const newUsernameInput = document.getElementById('new-username');
+        const newEmailInput = document.getElementById('new-email');
         const newRoleSelect = document.getElementById('new-role');
 
-        // Lokale Benutzerliste (zur Vereinfachung; in echten Anwendungen sollte das serverseitig geschehen)
+        const passwordChangeForm = document.getElementById('password-change-form');
+        const passwordChangeMessage = document.getElementById('password-change-message');
+
         const users = [
-            { username: 'Admin', role: 'Administrator', password: '1234' },
-            { username: 'TestUser', role: 'Benutzer', password: 'test' }
+            { username: 'Admin', email: 'admin@example.com', role: 'Administrator', password: '1234', status: 'aktiv' },
+            { username: 'TestUser', email: 'user@example.com', role: 'Benutzer', password: 'test', status: 'aktiv' }
         ];
 
         let currentUser = null;
 
-        // Benutzer in der Tabelle anzeigen
         function renderUsers() {
-            userTable.innerHTML = ''; // Leeren der Tabelle
+            userTable.innerHTML = '';
             users.forEach((user, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${user.username}</td>
+                    <td>${user.email}</td>
                     <td>${user.role}</td>
+                    <td>${user.status}</td>
                     <td>
-                        <button class="remove-user-button" data-index="${index}">Entfernen</button>
+                        ${currentUser.role === 'Administrator' ? `
+                            <button class="edit-user-button" data-index="${index}">Bearbeiten</button>
+                            <button class="block-user-button" data-index="${index}">${user.status === 'aktiv' ? 'Sperren' : 'Entsperren'}</button>
+                            <button class="remove-user-button" data-index="${index}">Löschen</button>
+                        ` : ''}
                     </td>
                 `;
                 userTable.appendChild(row);
             });
         }
 
-        // Benutzer hinzufügen
         addUserForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const newUser = {
+            if (newRoleSelect.value === 'Administrator' && currentUser.role !== 'Administrator') {
+                alert('Nur Administratoren können andere Admin-Konten erstellen.');
+                return;
+            }
+            users.push({
                 username: newUsernameInput.value,
+                email: newEmailInput.value,
                 role: newRoleSelect.value,
-                password: 'default' // Standardpasswort
-            };
-            users.push(newUser);
+                password: 'default',
+                status: 'aktiv'
+            });
             renderUsers();
-            newUsernameInput.value = ''; // Eingabefeld leeren
+            newUsernameInput.value = '';
+            newEmailInput.value = '';
         });
 
-        // Benutzer entfernen
         userTable.addEventListener('click', (e) => {
+            const index = e.target.dataset.index;
             if (e.target.classList.contains('remove-user-button')) {
-                const index = e.target.dataset.index;
                 users.splice(index, 1);
+                renderUsers();
+            } else if (e.target.classList.contains('block-user-button')) {
+                users[index].status = users[index].status === 'aktiv' ? 'gesperrt' : 'aktiv';
                 renderUsers();
             }
         });
 
-        // Login
+        passwordChangeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (passwordChangeForm['current-password'].value === currentUser.password) {
+                currentUser.password = passwordChangeForm['new-password'].value;
+                passwordChangeMessage.textContent = 'Passwort erfolgreich geändert!';
+                passwordChangeMessage.style.color = 'green';
+                passwordChangeMessage.classList.remove('hidden');
+            } else {
+                passwordChangeMessage.textContent = 'Falsches aktuelles Passwort!';
+                passwordChangeMessage.style.color = 'red';
+                passwordChangeMessage.classList.remove('hidden');
+            }
+        });
+
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            const user = users.find((u) => u.username === username && u.password === password);
-
+            const username = loginForm['username'].value;
+            const password = loginForm['password'].value;
+            const user = users.find(u => u.username === username && u.password === password && u.status === 'aktiv');
             if (user) {
                 currentUser = user;
                 loginMessage.classList.add('hidden');
                 loginForm.style.display = 'none';
-
-                if (user.role === 'Administrator') {
-                    userManagement.classList.remove('hidden');
-                    renderUsers();
-                } else {
-                    alert('Willkommen, ' + user.username + '! Sie haben eingeschränkte Rechte.');
-                }
+                if (user.role === 'Administrator') userManagement.classList.remove('hidden');
+                passwordChangeContainer.classList.remove('hidden');
+                renderUsers();
             } else {
-                loginMessage.textContent = 'Falsche Login-Daten!';
+                loginMessage.textContent = 'Falsche Login-Daten oder Konto gesperrt!';
                 loginMessage.style.color = 'red';
                 loginMessage.classList.remove('hidden');
             }
         });
 
-        // Logout
-        logoutButton.addEventListener('click', () => {
-            location.reload(); // Seite neu laden, um den Zustand zurückzusetzen
-        });
+        logoutButton.addEventListener('click', () => location.reload());
     </script>
 </body>
 </html>
