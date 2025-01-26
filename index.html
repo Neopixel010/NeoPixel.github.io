@@ -22,6 +22,42 @@
       text-shadow: 0 0 10px #ffcc00, 0 0 20px #ff7700;
     }
 
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      padding: 10px 0;
+      box-shadow: 0 0 10px #000;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    nav ul li {
+      display: inline;
+    }
+
+    nav ul li a {
+      color: #ffcc00;
+      text-decoration: none;
+      font-size: 1.2rem;
+      padding: 5px 15px;
+      transition: all 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #fff;
+      background: #ff7700;
+      border-radius: 5px;
+    }
+
     .counter {
       font-size: 1.2rem;
       color: #00ffcc;
@@ -64,6 +100,7 @@
   </style>
 </head>
 <body>
+  <!-- Header -->
   <h1>Galaxy Spiele</h1>
 
   <!-- Besucherzähler -->
@@ -71,66 +108,143 @@
     Du bist Besucher Nr. <span id="visitorCount">...</span>
   </div>
 
+  <!-- Navigationsmenü -->
+  <nav>
+    <ul>
+      <li><a href="#game1">Snake</a></li>
+      <li><a href="#game2">2048</a></li>
+      <li><a href="#game3">Tic Tac Toe</a></li>
+      <li><a href="#game4">Flappy Bird</a></li>
+      <li><a href="#game5">Minesweeper</a></li>
+      <li><a href="#game6">Pac-Man</a></li>
+      <li><a href="#game7">Brick Breaker</a></li>
+      <li><a href="#game8">Hexa Puzzle</a></li>
+      <li><a href="#game9">Sudoku</a></li>
+      <li><a href="#game10">Bubble Shooter</a></li>
+      <li><a href="#game11">Tetris</a></li>
+      <li><a href="#game12">Pong</a></li>
+      <li><a href="#game13">Asteroids</a></li>
+      <li><a href="#game14">Space Invaders</a></li>
+      <li><a href="#game15">Memory</a></li>
+      <li><a href="#game16">Zahlenrätsel</a></li>
+      <li><a href="#game17">Hangman</a></li>
+      <li><a href="#game18">Schach</a></li>
+      <li><a href="#game19">Reversi</a></li>
+      <li><a href="#game20">Wortsuche</a></li>
+    </ul>
+  </nav>
+
   <!-- Spiele-Container -->
   <div class="game-container">
     <!-- Spiel 1 -->
-    <div class="game">
+    <div id="game1" class="game">
       <h3>Snake</h3>
       <iframe src="https://play.snakegame.io/" title="Snake"></iframe>
     </div>
 
     <!-- Spiel 2 -->
-    <div class="game">
+    <div id="game2" class="game">
       <h3>2048</h3>
       <iframe src="https://play2048.co/" title="2048"></iframe>
     </div>
 
     <!-- Spiel 3 -->
-    <div class="game">
+    <div id="game3" class="game">
       <h3>Tic Tac Toe</h3>
       <iframe src="https://playtictactoe.org/" title="Tic Tac Toe"></iframe>
     </div>
 
     <!-- Spiel 4 -->
-    <div class="game">
+    <div id="game4" class="game">
       <h3>Flappy Bird</h3>
       <iframe src="https://flappybird.io/" title="Flappy Bird"></iframe>
     </div>
 
     <!-- Spiel 5 -->
-    <div class="game">
+    <div id="game5" class="game">
       <h3>Minesweeper</h3>
       <iframe src="https://minesweeper.online/" title="Minesweeper"></iframe>
     </div>
 
     <!-- Spiel 6 -->
-    <div class="game">
+    <div id="game6" class="game">
       <h3>Pac-Man</h3>
       <iframe src="https://worldsbiggestpacman.com/" title="Pac-Man"></iframe>
     </div>
 
     <!-- Spiel 7 -->
-    <div class="game">
+    <div id="game7" class="game">
       <h3>Brick Breaker</h3>
       <iframe src="https://www.brickbreaker.de/" title="Brick Breaker"></iframe>
     </div>
 
     <!-- Spiel 8 -->
-    <div class="game">
+    <div id="game8" class="game">
       <h3>Hexa Puzzle</h3>
       <iframe src="https://hexa-puzzle.com/" title="Hexa Puzzle"></iframe>
     </div>
 
     <!-- Spiel 9 -->
-    <div class="game">
+    <div id="game9" class="game">
       <h3>Sudoku</h3>
       <iframe src="https://sudoku.com/" title="Sudoku"></iframe>
     </div>
 
     <!-- Spiel 10 -->
-    <div class="game">
+    <div id="game10" class="game">
       <h3>Bubble Shooter</h3>
       <iframe src="https://www.bubbleshooter.net/" title="Bubble Shooter"></iframe>
+    </div>
+
+    <!-- Spiel 11 bis 20 -->
+    <div id="game11" class="game">
+      <h3>Tetris</h3>
+      <iframe src="https://tetris.com/play-tetris" title="Tetris"></iframe>
+    </div>
+
+    <div id="game12" class="game">
+      <h3>Pong</h3>
+      <iframe src="https://pong-2.com/" title="Pong"></iframe>
+    </div>
+
+    <div id="game13" class="game">
+      <h3>Asteroids</h3>
+      <iframe src="https://playclassic.games/games/arcade/asteroids/" title="Asteroids"></iframe>
+    </div>
+
+    <div id="game14" class="game">
+      <h3>Space Invaders</h3>
+      <iframe src="https://www.retrogames.cz/play_021-SpaceInvaders.php" title="Space Invaders"></iframe>
+    </div>
+
+    <div id="game15" class="game">
+      <h3>Memory</h3>
+      <iframe src="https://www.memozor.com/memory-games" title="Memory"></iframe>
+    </div>
+
+    <div id="game16" class="game">
+      <h3>Zahlenrätsel</h3>
+      <iframe src="https://sudoku.com/numbers-puzzle/" title="Zahlenrätsel"></iframe>
+    </div>
+
+    <div id="game17" class="game">
+      <h3>Hangman</h3>
+      <iframe src="https://www.hangmanwords.com/play" title="Hangman"></iframe>
+    </div>
+
+    <div id="game18" class="game">
+      <h3>Schach</h3>
+      <iframe src="https://www.chess.com/play/computer" title="Schach"></iframe>
+    </div>
+
+    <div id="game19" class="game">
+      <h3>Reversi</h3>
+      <iframe src="https://www.flyordie.com/reversi/" title="Reversi"></iframe>
+    </div>
+
+    <div id="game20" class="game">
+      <h3>Wortsuche</h3>
+      <iframe src="https://thewordsearch.com/" title="Wortsuche"></iframe>
     </div>
   </div>
 
@@ -141,19 +255,10 @@
 
   <!-- Besucherzähler Script -->
   <script>
-    // Lokaler Besucherzähler
     const visitorCountKey = 'visitorCount';
-
-    // Hole den aktuellen Zähler aus dem LocalStorage
     let visitorCount = localStorage.getItem(visitorCountKey) || 0;
-
-    // Erhöhe den Zähler
     visitorCount++;
-
-    // Speichere den neuen Zähler im LocalStorage
     localStorage.setItem(visitorCountKey, visitorCount);
-
-    // Zeige den Zähler auf der Seite an
     document.getElementById('visitorCount').textContent = visitorCount;
   </script>
 </body>
