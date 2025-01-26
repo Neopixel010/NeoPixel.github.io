@@ -56,6 +56,13 @@
     .admin-function {
       text-align: left;
     }
+    .admin-output {
+      background: #ecf0f1;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 20px;
+      color: #2c3e50;
+    }
   </style>
 </head>
 <body>
@@ -69,17 +76,6 @@
     <input type="number" id="guess" placeholder="Dein Tipp" min="1" max="10">
     <button onclick="checkGuess()">Prüfen</button>
     <p id="result"></p>
-    <hr>
-    <h2>Spiel: Münzwurf</h2>
-    <p>Rate, ob Kopf oder Zahl kommt:</p>
-    <button onclick="coinFlip('Kopf')">Kopf</button>
-    <button onclick="coinFlip('Zahl')">Zahl</button>
-    <p id="coin-result"></p>
-    <hr>
-    <h2>Spiel: Würfeln</h2>
-    <p>Klicke, um einen Würfel zu werfen!</p>
-    <button onclick="rollDice()">Würfeln</button>
-    <p id="dice-result"></p>
   </div>
 
   <!-- Geheimer Login -->
@@ -108,8 +104,10 @@
       <li><button class="admin-function" onclick="clearCache()">🧹 Cache leeren</button></li>
       <li><button class="admin-function" onclick="updateSystem()">🔄 System aktualisieren</button></li>
       <li><button class="admin-function" onclick="deleteLogs()">🗑️ Logs löschen</button></li>
-      <li><button class="admin-function" onclick="banUser()">🚫 Benutzer sperren</button></li>
     </ul>
+    <div id="admin-output" class="admin-output">
+      <p>Hier werden Ergebnisse der Admin-Aktionen angezeigt...</p>
+    </div>
     <button onclick="logout()">🔒 Logout</button>
   </div>
 
@@ -128,23 +126,6 @@
         result.textContent = '❌ Falsch geraten! Versuch es nochmal.';
         result.style.color = 'red';
       }
-    }
-
-    function coinFlip(choice) {
-      const result = document.getElementById('coin-result');
-      const coin = Math.random() < 0.5 ? 'Kopf' : 'Zahl';
-      
-      if (choice === coin) {
-        result.textContent = `🎉 Du hast richtig getippt! Es ist ${coin}.`;
-      } else {
-        result.textContent = `❌ Leider falsch. Es ist ${coin}.`;
-      }
-    }
-
-    function rollDice() {
-      const diceResult = document.getElementById('dice-result');
-      const dice = Math.floor(Math.random() * 6) + 1;
-      diceResult.textContent = `🎲 Du hast eine ${dice} geworfen!`;
     }
 
     // Geheimer Login anzeigen mit Tastenkombination
@@ -173,18 +154,51 @@
       }
     }
 
-    // Admin-Funktionen
-    function viewLogs() { alert('📜 Logs werden angezeigt.'); }
-    function manageUsers() { alert('👥 Benutzer werden verwaltet.'); }
-    function settings() { alert('⚙️ Einstellungen werden geändert.'); }
-    function serverStatus() { alert('📊 Serverstatus geprüft.'); }
-    function createBackup() { alert('💾 Backup wurde erstellt.'); }
-    function sendNotification() { alert('📢 Benachrichtigungen wurden gesendet.'); }
-    function analyzeData() { alert('📈 Datenanalyse abgeschlossen.'); }
-    function clearCache() { alert('🧹 Cache wurde geleert.'); }
-    function updateSystem() { alert('🔄 System aktualisiert.'); }
-    function deleteLogs() { alert('🗑️ Logs gelöscht.'); }
-    function banUser() { alert('🚫 Benutzer gesperrt.'); }
+    // Admin-Funktionen mit Ausgabe
+    function setAdminOutput(message) {
+      const adminOutput = document.getElementById('admin-output');
+      adminOutput.innerHTML = `<p>${message}</p>`;
+    }
+
+    function viewLogs() {
+      setAdminOutput('📜 Logs: Keine Fehler gefunden.');
+    }
+
+    function manageUsers() {
+      setAdminOutput('👥 Benutzerverwaltung: 10 aktive Benutzer.');
+    }
+
+    function settings() {
+      setAdminOutput('⚙️ Einstellungen wurden erfolgreich geändert.');
+    }
+
+    function serverStatus() {
+      setAdminOutput('📊 Serverstatus: Alles läuft einwandfrei.');
+    }
+
+    function createBackup() {
+      setAdminOutput('💾 Backup wurde erfolgreich erstellt.');
+    }
+
+    function sendNotification() {
+      setAdminOutput('📢 Benachrichtigung an alle Benutzer gesendet.');
+    }
+
+    function analyzeData() {
+      setAdminOutput('📈 Datenanalyse abgeschlossen. 95% der Benutzer sind aktiv.');
+    }
+
+    function clearCache() {
+      setAdminOutput('🧹 Cache wurde erfolgreich geleert.');
+    }
+
+    function updateSystem() {
+      setAdminOutput('🔄 System wurde erfolgreich aktualisiert.');
+    }
+
+    function deleteLogs() {
+      setAdminOutput('🗑️ Logs wurden erfolgreich gelöscht.');
+    }
 
     function logout() {
       alert('🔒 Du wurdest ausgeloggt!');
