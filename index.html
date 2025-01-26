@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login System</title>
+    <title>Login System mit Spielen</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
 
-        #app, #adminDashboard, #memberArea {
+        #app, #adminDashboard, #memberArea, .game {
             max-width: 400px;
             margin: 0 auto;
             text-align: center;
@@ -35,6 +35,19 @@
         #error {
             color: red;
             display: none;
+        }
+
+        .game {
+            display: none;
+        }
+
+        #gameList {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #gameList li {
+            margin: 5px 0;
         }
     </style>
 </head>
@@ -69,21 +82,53 @@
     </div>
 
     <div id="memberArea" style="display: none;">
-        <h1>Welcome to the Member Area</h1>
-        <p>You have access to the following games:</p>
-        <ul>
-            <li>Game 1</li>
-            <li>Game 2</li>
-            <li>Game 3</li>
-            <li>Game 4</li>
-            <li>Game 5</li>
-            <li>Game 6</li>
-            <li>Game 7</li>
-            <li>Game 8</li>
-            <li>Game 9</li>
-            <li>Game 10</li>
+        <h1>Member Area</h1>
+        <p>Wähle ein Spiel aus:</p>
+        <ul id="gameList">
+            <li><button onclick="startGame('guessNumber')">Zahlenraten</button></li>
+            <li><button onclick="startGame('ticTacToe')">Tic-Tac-Toe</button></li>
+            <li><button onclick="startGame('clickGame')">Klickspiel</button></li>
         </ul>
         <button id="logoutMember">Logout</button>
+    </div>
+
+    <!-- Zahlenraten -->
+    <div id="guessNumber" class="game">
+        <h2>Zahlenraten</h2>
+        <p id="guessHint">Ich habe mir eine Zahl zwischen 1 und 100 ausgedacht. Rate sie!</p>
+        <input type="number" id="guessInput" placeholder="Dein Tipp">
+        <button onclick="checkGuess()">Raten</button>
+        <p id="guessResult"></p>
+        <button onclick="backToGames()">Zurück zu den Spielen</button>
+    </div>
+
+    <!-- Tic-Tac-Toe -->
+    <div id="ticTacToe" class="game">
+        <h2>Tic-Tac-Toe</h2>
+        <div id="board" style="display: grid; grid-template-columns: repeat(3, 50px); gap: 5px;">
+            <div class="cell" onclick="makeMove(this)" style="width: 50px; height: 50px; border: 1px solid black; display: flex; justify-content: center; align-items: center; font-size: 20px;"></div>
+            <div class="cell" onclick="makeMove(this)"></div>
+            <div class="cell" onclick="makeMove(this)"></div>
+            <div class="cell" onclick="makeMove(this)"></div>
+            <div class="cell" onclick="makeMove(this)"></div>
+            <div class="cell" onclick="makeMove(this)"></div>
+            <div class="cell" onclick="makeMove(this)"></div>
+            <div class="cell" onclick="makeMove(this)"></div>
+            <div class="cell" onclick="makeMove(this)"></div>
+        </div>
+        <p id="ticTacToeResult"></p>
+        <button onclick="resetBoard()">Neustart</button>
+        <button onclick="backToGames()">Zurück zu den Spielen</button>
+    </div>
+
+    <!-- Klickspiel -->
+    <div id="clickGame" class="game">
+        <h2>Klickspiel</h2>
+        <p>Klicke so oft wie möglich in 5 Sekunden!</p>
+        <button id="clickButton" onclick="countClick()">Klicken</button>
+        <p id="clickCount">Klicks: 0</p>
+        <p id="clickResult"></p>
+        <button onclick="backToGames()">Zurück zu den Spielen</button>
     </div>
 
     <script>
@@ -104,27 +149,12 @@
         const logout = document.getElementById("logout");
         const logoutMember = document.getElementById("logoutMember");
 
-        // Helper functions
-        function showDashboard(role) {
-            app.style.display = "none";
-            if (role === "admin") {
-                adminDashboard.style.display = "block";
-                updateUserList();
-            } else {
-                memberArea.style.display = "block";
-            }
-        }
+        // Game state
+        let randomNumber = Math.floor(Math.random() * 100) + 1;
+        let clickCount = 0;
+        let timerRunning = false;
 
-        function updateUserList() {
-            userList.innerHTML = "";
-            accounts.forEach(account => {
-                const li = document.createElement("li");
-                li.textContent = `${account.username} (${account.role})`;
-                userList.appendChild(li);
-            });
-        }
-
-        // Login handler
+        // Login logic
         loginForm.addEventListener("submit", (e) => {
             e.preventDefault();
             const username = document.getElementById("username").value;
@@ -132,13 +162,14 @@
 
             const account = accounts.find(acc => acc.username === username && acc.password === password);
             if (account) {
-                showDashboard(account.role);
+                app.style.display = "none";
+                account.role === "admin" ? adminDashboard.style.display = "block" : memberArea.style.display = "block";
             } else {
                 error.style.display = "block";
             }
         });
 
-        // Create account handler
+        // Admin logic
         createAccountForm.addEventListener("submit", (e) => {
             e.preventDefault();
             const newUsername = document.getElementById("newUsername").value;
@@ -146,11 +177,63 @@
             const role = document.getElementById("role").value;
 
             accounts.push({ username: newUsername, password: newPassword, role });
-            updateUserList();
-            alert("Account created successfully!");
+            alert("Benutzer erstellt!");
         });
 
-        // Logout handlers
+        // Game navigation
+        function startGame(gameId) {
+            document.querySelectorAll('.game').forEach(game => game.style.display = "none");
+            document.getElementById(gameId).style.display = "block";
+        }
+
+        function backToGames() {
+            document.querySelectorAll('.game').forEach(game => game.style.display = "none");
+            memberArea.style.display = "block";
+        }
+
+        // Zahlenraten
+        function checkGuess() {
+            const guess = Number(document.getElementById("guessInput").value);
+            const result = document.getElementById("guessResult");
+            if (guess === randomNumber) {
+                result.textContent = "Richtig! Du hast die Zahl erraten.";
+            } else if (guess < randomNumber) {
+                result.textContent = "Zu niedrig! Versuch es nochmal.";
+            } else {
+                result.textContent = "Zu hoch! Versuch es nochmal.";
+            }
+        }
+
+        // Tic-Tac-Toe
+        let currentPlayer = "X";
+        function makeMove(cell) {
+            if (!cell.textContent) {
+                cell.textContent = currentPlayer;
+                currentPlayer = currentPlayer === "X" ? "O" : "X";
+            }
+        }
+
+        function resetBoard() {
+            document.querySelectorAll('.cell').forEach(cell => cell.textContent = "");
+            currentPlayer = "X";
+        }
+
+        // Klickspiel
+        function countClick() {
+            if (!timerRunning) {
+                timerRunning = true;
+                clickCount = 0;
+                document.getElementById("clickResult").textContent = "";
+                setTimeout(() => {
+                    timerRunning = false;
+                    document.getElementById("clickResult").textContent = `Zeit vorbei! Du hast ${clickCount} Klicks geschafft.`;
+                }, 5000);
+            }
+            clickCount++;
+            document.getElementById("clickCount").textContent = `Klicks: ${clickCount}`;
+        }
+
+        // Logout
         logout.addEventListener("click", () => {
             adminDashboard.style.display = "none";
             app.style.display = "block";
