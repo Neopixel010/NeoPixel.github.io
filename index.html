@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spielewelt mit Admin-Bereich</title>
+  <title>Spielewelt</title>
   <style>
     /* Allgemeines Styling */
     body {
@@ -38,173 +38,179 @@
       font-size: 16px;
     }
 
-    /* Layout Styling */
-    .flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    /* Spielebereich */
     .container {
-      display: flex;
-      flex-direction: row;
-    }
-
-    /* Sidebar Styling */
-    .sidebar {
-      width: 250px;
-      background: #2c3e50;
-      color: white;
-      height: 100vh;
       padding: 20px;
-      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    .sidebar h2 {
-      font-size: 22px;
+    .game {
       margin-bottom: 20px;
-    }
-    .sidebar a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      margin-bottom: 15px;
-      font-size: 18px;
-      padding: 10px;
-      border-radius: 5px;
-      transition: background 0.3s;
-    }
-    .sidebar a:hover {
-      background: #34495e;
-    }
-
-    /* Content Area */
-    .content {
-      flex: 1;
       padding: 20px;
-    }
-
-    /* Admin-Karten */
-    .card {
-      background: white;
       border-radius: 10px;
+      background: white;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      margin-bottom: 20px;
     }
-    .card h3 {
+    .game h2 {
       margin-top: 0;
-      color: #34495e;
     }
-    .card p {
-      margin: 10px 0;
+
+    /* Unsichtbarer Knopf */
+    #hidden-button {
+      position: fixed;
+      top: 50%;
+      left: 0;
+      width: 30px;
+      height: 100px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
     }
-    .card button {
-      background: #1abc9c;
+
+    /* Admin-Bereich */
+    #admin-menu {
+      display: none;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      margin: 50px auto;
+      border-radius: 10px;
     }
-    .card button:hover {
-      background: #16a085;
+    .logout-button {
+      background: #e74c3c;
     }
-    .output {
-      margin-top: 20px;
-      padding: 10px;
-      background: #ecf0f1;
-      border-radius: 5px;
-      color: #2c3e50;
+    .logout-button:hover {
+      background: #c0392b;
     }
   </style>
 </head>
 <body>
-  <!-- Unsichtbarer Bereich für geheimen Login -->
-  <div id="tap-area" onclick="incrementTapCount()"></div>
+  <!-- Unsichtbarer Knopf für den Admin-Bereich -->
+  <button id="hidden-button" onclick="enterAdminMenu()"></button>
 
-  <!-- Layout mit Sidebar und Content -->
-  <div class="container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <h2>Admin-Menü</h2>
-      <a href="#" onclick="showSection('dashboard')">🏠 Dashboard</a>
-      <a href="#" onclick="showSection('logs')">📜 Logs anzeigen</a>
-      <a href="#" onclick="showSection('users')">👥 Benutzer verwalten</a>
-      <a href="#" onclick="showSection('settings')">⚙️ Einstellungen</a>
-      <a href="#" onclick="logout()">🔒 Logout</a>
+  <!-- Spielebereich -->
+  <div id="game-section" class="container">
+    <h1>Willkommen in der Spielewelt</h1>
+    <p>Spiele eines der folgenden Spiele und habe Spaß!</p>
+
+    <!-- 10 Spiele -->
+    <div class="game">
+      <h2>Spiel 1: Rate die Zahl</h2>
+      <p>Errate die Zahl zwischen 1 und 10!</p>
+      <input type="number" id="guess" placeholder="Dein Tipp" min="1" max="10">
+      <button onclick="checkGuess()">Prüfen</button>
+      <p id="result"></p>
     </div>
 
-    <!-- Content -->
-    <div class="content">
-      <!-- Dashboard -->
-      <div id="dashboard" class="section">
-        <h1>Willkommen im Admin-Dashboard</h1>
-        <p>Hier kannst du alle wichtigen Funktionen verwalten.</p>
-        <div class="card">
-          <h3>📊 Überblick</h3>
-          <p>12 aktive Benutzer</p>
-          <p>Keine Fehler in den Logs</p>
-        </div>
-      </div>
+    <div class="game">
+      <h2>Spiel 2: Zahlen-Addieren</h2>
+      <p id="addition-task"></p>
+      <input type="number" id="addition-answer" placeholder="Deine Antwort">
+      <button onclick="checkAddition()">Antwort prüfen</button>
+      <p id="addition-result"></p>
+    </div>
 
-      <!-- Logs -->
-      <div id="logs" class="section" style="display: none;">
-        <h1>Logs</h1>
-        <div class="card">
-          <h3>📜 Systemlogs</h3>
-          <button onclick="viewLogs()">Logs anzeigen</button>
-          <div id="logs-output" class="output">Hier werden Logs angezeigt...</div>
-        </div>
-      </div>
+    <div class="game">
+      <h2>Spiel 3: Münzwurf</h2>
+      <p>Rate, ob Kopf oder Zahl kommt:</p>
+      <button onclick="coinFlip('Kopf')">Kopf</button>
+      <button onclick="coinFlip('Zahl')">Zahl</button>
+      <p id="coin-result"></p>
+    </div>
 
-      <!-- Benutzer verwalten -->
-      <div id="users" class="section" style="display: none;">
-        <h1>Benutzerverwaltung</h1>
-        <div class="card">
-          <h3>👥 Benutzeraktionen</h3>
-          <button onclick="manageUsers()">Benutzer anzeigen</button>
-          <div id="users-output" class="output">Hier werden Benutzer angezeigt...</div>
-        </div>
-      </div>
+    <div class="game">
+      <h2>Spiel 4: Würfeln</h2>
+      <button onclick="rollDice()">Würfeln</button>
+      <p id="dice-result"></p>
+    </div>
 
-      <!-- Einstellungen -->
-      <div id="settings" class="section" style="display: none;">
-        <h1>Einstellungen</h1>
-        <div class="card">
-          <h3>⚙️ Systemeinstellungen</h3>
-          <button onclick="settings()">Einstellungen ändern</button>
-          <div id="settings-output" class="output">Hier werden Ergebnisse angezeigt...</div>
-        </div>
-      </div>
+    <!-- Platzhalter für weitere Spiele -->
+    <div class="game">
+      <h2>Weitere Spiele folgen bald...</h2>
     </div>
   </div>
 
+  <!-- Admin-Bereich -->
+  <div id="admin-menu">
+    <h1>Admin-Bereich</h1>
+    <p>Willkommen im Admin-Menü. Hier kannst du alle wichtigen Funktionen verwalten.</p>
+
+    <button onclick="viewLogs()">📜 Logs anzeigen</button>
+    <p id="logs-output" style="margin-top: 10px;">Hier werden Logs angezeigt...</p>
+
+    <button onclick="manageUsers()">👥 Benutzer verwalten</button>
+    <p id="users-output" style="margin-top: 10px;">Hier werden Benutzer angezeigt...</p>
+
+    <button onclick="settings()">⚙️ Einstellungen ändern</button>
+    <p id="settings-output" style="margin-top: 10px;">Hier werden Änderungen angezeigt...</p>
+
+    <button class="logout-button" onclick="logout()">🔒 Logout</button>
+  </div>
+
   <script>
-    /* Geheimer Login */
-    let tapCount = 0;
-    function incrementTapCount() {
-      tapCount++;
-      if (tapCount === 10) {
-        alert('🔓 Geheimer Admin-Bereich freigeschaltet!');
-        document.querySelector('.sidebar').style.display = 'block';
-      }
+    /* Unsichtbarer Knopf zum Betreten des Admin-Bereichs */
+    function enterAdminMenu() {
+      document.getElementById('game-section').style.display = 'none';
+      document.getElementById('admin-menu').style.display = 'block';
     }
 
-    /* Navigation */
-    function showSection(sectionId) {
-      const sections = document.querySelectorAll('.section');
-      sections.forEach(section => section.style.display = 'none');
-      document.getElementById(sectionId).style.display = 'block';
+    /* Logout-Funktion */
+    function logout() {
+      document.getElementById('admin-menu').style.display = 'none';
+      document.getElementById('game-section').style.display = 'block';
+      alert('🔒 Du wurdest ausgeloggt und bist zurück zu den Spielen!');
+    }
+
+    /* Spiele-Funktionen */
+    // Spiel 1: Rate die Zahl
+    const randomNumber = Math.floor(Math.random() * 10) + 1;
+    function checkGuess() {
+      const userGuess = parseInt(document.getElementById('guess').value);
+      document.getElementById('result').textContent =
+        userGuess === randomNumber
+          ? '🎉 Glückwunsch! Du hast richtig geraten.'
+          : '❌ Leider falsch. Versuch es nochmal.';
+    }
+
+    // Spiel 2: Zahlen-Addieren
+    const num1 = Math.floor(Math.random() * 50) + 1;
+    const num2 = Math.floor(Math.random() * 50) + 1;
+    document.getElementById('addition-task').textContent = `Was ist ${num1} + ${num2}?`;
+    function checkAddition() {
+      const answer = parseInt(document.getElementById('addition-answer').value);
+      document.getElementById('addition-result').textContent =
+        answer === num1 + num2
+          ? '🎉 Richtig!'
+          : '❌ Falsch. Versuch es nochmal.';
+    }
+
+    // Spiel 3: Münzwurf
+    function coinFlip(choice) {
+      const result = Math.random() < 0.5 ? 'Kopf' : 'Zahl';
+      document.getElementById('coin-result').textContent =
+        choice === result
+          ? `🎉 Richtig! Es ist ${result}.`
+          : `❌ Falsch. Es war ${result}.`;
+    }
+
+    // Spiel 4: Würfeln
+    function rollDice() {
+      const diceResult = Math.floor(Math.random() * 6) + 1;
+      document.getElementById('dice-result').textContent = `🎲 Du hast eine ${diceResult} geworfen.`;
     }
 
     /* Admin-Funktionen */
     function viewLogs() {
       document.getElementById('logs-output').textContent = '📜 Logs: Keine Fehler gefunden.';
     }
+
     function manageUsers() {
       document.getElementById('users-output').textContent = '👥 Benutzer: 12 aktive Benutzer.';
     }
+
     function settings() {
-      document.getElementById('settings-output').textContent = '⚙️ Einstellungen wurden erfolgreich geändert.';
-    }
-    function logout() {
-      alert('🔒 Du wurdest ausgeloggt.');
-      document.querySelector('.sidebar').style.display = 'none';
-      tapCount = 0;
+      document.getElementById('settings-output').textContent = '⚙️ Einstellungen wurden geändert.';
     }
   </script>
 </body>
