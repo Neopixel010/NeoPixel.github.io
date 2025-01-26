@@ -1,0 +1,4 @@
+mkdir ip-tracker-backend
+cd ip-tracker-backend
+npm init -y
+npm install express body-parser cors
