@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Spiel mit Login, IP-Übersicht und Editor</title>
+    <title>Admin-Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,18 +34,38 @@
             background-color: #666;
             border-radius: 5px;
         }
-        #login-container, #spiel-container, #uebersicht-container, #editor-container {
+        #login-container, #admin-tools, #editor-container, #stats-container, #user-management {
             margin: 20px auto;
             padding: 20px;
-            max-width: 500px;
+            max-width: 600px;
             background: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
-        #besucherzaehler {
-            text-align: center;
-            margin: 10px 0;
-            color: #333;
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
         }
         button {
             background-color: #333;
@@ -54,19 +74,10 @@
             padding: 10px 15px;
             cursor: pointer;
             border-radius: 5px;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #555;
-        }
-        textarea {
-            width: 100%;
-            height: 200px;
-            margin-top: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 14px;
         }
         .hidden {
             display: none;
@@ -75,19 +86,16 @@
 </head>
 <body>
     <header>
-        <h1>Willkommen auf unserer Seite</h1>
+        <h1>Admin-Dashboard</h1>
     </header>
     <nav>
-        <a href="#spiel">Spiel</a>
-        <a href="#login">Login</a>
+        <a href="#editor">HTML/CSS/JS-Editor</a>
+        <a href="#users">Benutzerverwaltung</a>
+        <a href="#stats">Statistiken</a>
+        <a href="#logout" id="logout-button">Abmelden</a>
     </nav>
 
-    <!-- Besucherzähler -->
-    <div id="besucherzaehler">
-        Besucher: <span id="counter">0</span>
-    </div>
-
-    <!-- Login-System -->
+    <!-- Login -->
     <div id="login-container">
         <h2>Login</h2>
         <form id="login-form">
@@ -100,88 +108,96 @@
         <p id="login-message" class="hidden"></p>
     </div>
 
-    <!-- Übersicht und Editor -->
-    <div id="uebersicht-container" class="hidden">
-        <h2>IP-Übersicht</h2>
-        <ul id="ip-list"></ul>
-        <button id="logout-button">Abmelden</button>
-    </div>
-
-    <!-- HTML-Editor -->
-    <div id="editor-container" class="hidden">
-        <h2>HTML-Editor</h2>
-        <textarea id="html-editor">
+    <!-- Admin-Tools -->
+    <div id="admin-tools" class="hidden">
+        <!-- HTML/CSS/JS-Editor -->
+        <div id="editor-container">
+            <h2>HTML/CSS/JS-Editor</h2>
+            <textarea id="html-editor">
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <title>Bearbeite mich!</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+    </style>
 </head>
 <body>
-    <h1>Willkommen in deinem HTML-Editor!</h1>
+    <h1>Willkommen im Editor!</h1>
 </body>
 </html>
-        </textarea>
-        <button id="apply-html-button">HTML anwenden</button>
-    </div>
+            </textarea>
+            <button id="apply-html-button">HTML anwenden</button>
+        </div>
 
-    <!-- Spiel -->
-    <div id="spiel-container">
-        <h2>Spiel: Klick auf den Button!</h2>
-        <button id="spiel-button">Klick mich!</button>
-        <p id="spiel-score">Dein Score: <span id="score">0</span></p>
+        <!-- Benutzerverwaltung -->
+        <div id="user-management">
+            <h2>Benutzerverwaltung</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Benutzername</th>
+                        <th>Rolle</th>
+                        <th>Aktionen</th>
+                    </tr>
+                </thead>
+                <tbody id="user-table">
+                    <tr>
+                        <td>Admin</td>
+                        <td>Administrator</td>
+                        <td><button class="remove-user-button">Entfernen</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Neuen Benutzer hinzufügen:</h3>
+            <form id="add-user-form">
+                <input type="text" id="new-username" placeholder="Benutzername" required>
+                <select id="new-role">
+                    <option value="User">Benutzer</option>
+                    <option value="Admin">Administrator</option>
+                </select>
+                <button type="submit">Hinzufügen</button>
+            </form>
+        </div>
+
+        <!-- Statistiken -->
+        <div id="stats-container">
+            <h2>Statistiken</h2>
+            <p>Besucher: <span id="visitor-count">0</span></p>
+            <p>Letzte Änderung: <span id="last-edit">Noch keine Änderungen</span></p>
+        </div>
     </div>
 
     <script>
-        // Besucherzähler
-        const counterElement = document.getElementById('counter');
-        let counter = localStorage.getItem('besucherzaehler') || 0;
-        counter++;
-        localStorage.setItem('besucherzaehler', counter);
-        counterElement.textContent = counter;
-
-        // Login-System
         const loginForm = document.getElementById('login-form');
         const loginMessage = document.getElementById('login-message');
-        const uebersichtContainer = document.getElementById('uebersicht-container');
-        const editorContainer = document.getElementById('editor-container');
-        const ipList = document.getElementById('ip-list');
+        const adminTools = document.getElementById('admin-tools');
         const logoutButton = document.getElementById('logout-button');
-        const editor = document.getElementById('html-editor');
+        const visitorCount = document.getElementById('visitor-count');
+        const lastEdit = document.getElementById('last-edit');
+        const htmlEditor = document.getElementById('html-editor');
         const applyHtmlButton = document.getElementById('apply-html-button');
+        const userTable = document.getElementById('user-table');
+        const addUserForm = document.getElementById('add-user-form');
 
-        const ipAdressen = [
-            "192.168.0.1",
-            "192.168.0.2",
-            "192.168.0.3",
-            "192.168.0.4",
-            "192.168.0.5"
-        ]; // Simulierte IP-Adressen
+        // Besucherzähler
+        let visitors = localStorage.getItem('visitors') || 0;
+        visitors++;
+        localStorage.setItem('visitors', visitors);
+        visitorCount.textContent = visitors;
 
+        // Login
         loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Verhindert Seiten-Reload
+            e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            // Authentifizierung: Linus / Hof123
-            if (username === 'Linus' && password === 'Hof123') {
-                loginMessage.textContent = 'Login erfolgreich! Willkommen, ' + username + '!';
-                loginMessage.style.color = 'green';
-                loginMessage.classList.remove('hidden');
-
-                // Zeige die Übersicht und den Editor
+            if (username === 'Admin' && password === '1234') {
+                loginMessage.classList.add('hidden');
                 loginForm.style.display = 'none';
-                uebersichtContainer.classList.remove('hidden');
-                editorContainer.classList.remove('hidden');
-
-                // Fülle die IP-Liste
-                ipList.innerHTML = '';
-                ipAdressen.forEach(ip => {
-                    const li = document.createElement('li');
-                    li.textContent = ip;
-                    ipList.appendChild(li);
-                });
+                adminTools.classList.remove('hidden');
             } else {
-                loginMessage.textContent = 'Login fehlgeschlagen! Versuche es erneut.';
+                loginMessage.textContent = 'Falsche Login-Daten!';
                 loginMessage.style.color = 'red';
                 loginMessage.classList.remove('hidden');
             }
@@ -189,26 +205,40 @@
 
         // Logout
         logoutButton.addEventListener('click', function() {
-            location.reload(); // Seite neu laden, um den Zustand zurückzusetzen
+            location.reload();
         });
 
-        // HTML-Editor anwenden
+        // HTML-Editor
         applyHtmlButton.addEventListener('click', function() {
-            const newHtml = editor.value;
+            const newHtml = htmlEditor.value;
             const newWindow = window.open("", "_blank");
             newWindow.document.open();
             newWindow.document.write(newHtml);
             newWindow.document.close();
+            lastEdit.textContent = new Date().toLocaleString();
         });
 
-        // Spiel
-        const spielButton = document.getElementById('spiel-button');
-        const scoreElement = document.getElementById('score');
-        let score = 0;
+        // Benutzerverwaltung
+        addUserForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('new-username').value;
+            const role = document.getElementById('new-role').value;
 
-        spielButton.addEventListener('click', function() {
-            score++;
-            scoreElement.textContent = score;
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${username}</td>
+                <td>${role}</td>
+                <td><button class="remove-user-button">Entfernen</button></td>
+            `;
+            userTable.appendChild(newRow);
+
+            document.getElementById('new-username').value = '';
+        });
+
+        userTable.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-user-button')) {
+                e.target.parentElement.parentElement.remove();
+            }
         });
     </script>
 </body>
