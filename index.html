@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin-Dashboard mit E-Mail und Berechtigungen</title>
+    <title>Admin-Dashboard mit Spielen</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,28 +34,13 @@
             background-color: #666;
             border-radius: 5px;
         }
-        #login-container, #user-management, #password-change-container {
+        #login-container, #user-management, #password-change-container, #games-container {
             margin: 20px auto;
             padding: 20px;
             max-width: 800px;
             background: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
         }
         button {
             background-color: #333;
@@ -64,17 +49,18 @@
             padding: 10px 15px;
             cursor: pointer;
             border-radius: 5px;
-            margin-top: 10px;
+            margin: 5px 0;
         }
         button:hover {
             background-color: #555;
         }
-        input[type="email"], input[type="text"], input[type="password"], select {
-            padding: 8px;
+        .game-box {
+            margin-top: 20px;
+        }
+        iframe {
             width: 100%;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            height: 400px;
+            border: none;
         }
         .hidden {
             display: none;
@@ -83,7 +69,7 @@
 </head>
 <body>
     <header>
-        <h1>Admin-Dashboard mit Berechtigungen</h1>
+        <h1>Admin-Dashboard mit Spielen</h1>
     </header>
     <nav>
         <a href="#logout" id="logout-button" class="hidden">Abmelden</a>
@@ -102,166 +88,172 @@
         <p id="login-message" class="hidden"></p>
     </div>
 
-    <!-- Benutzerverwaltung (Nur für Admins sichtbar) -->
-    <div id="user-management" class="hidden">
-        <h2>Benutzerverwaltung</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Benutzername</th>
-                    <th>E-Mail</th>
-                    <th>Rolle</th>
-                    <th>Status</th>
-                    <th>Aktionen</th>
-                </tr>
-            </thead>
-            <tbody id="user-table">
-                <!-- Benutzer werden hier dynamisch hinzugefügt -->
-            </tbody>
-        </table>
-
-        <h3>Neuen Benutzer hinzufügen:</h3>
-        <form id="add-user-form">
-            <label for="new-username">Benutzername:</label>
-            <input type="text" id="new-username" required>
-            <label for="new-email">E-Mail:</label>
-            <input type="email" id="new-email" required>
-            <label for="new-role">Rolle:</label>
-            <select id="new-role">
-                <option value="Benutzer">Benutzer</option>
-                <option value="Admin">Administrator</option>
-                <option value="Gast">Gast</option>
-            </select>
-            <button type="submit">Hinzufügen</button>
-        </form>
-    </div>
-
-    <!-- Passwort ändern -->
-    <div id="password-change-container" class="hidden">
-        <h2>Passwort ändern</h2>
-        <form id="password-change-form">
-            <label for="current-password">Aktuelles Passwort:</label>
-            <input type="password" id="current-password" required>
-            <label for="new-password">Neues Passwort:</label>
-            <input type="password" id="new-password" required>
-            <button type="submit">Passwort ändern</button>
-        </form>
-        <p id="password-change-message" class="hidden"></p>
+    <!-- Spiele-Bereich (Nur für normale Benutzer sichtbar) -->
+    <div id="games-container" class="hidden">
+        <h2>Spiele</h2>
+        <p>Hier sind 10 einfache Spiele für dich:</p>
+        <div class="game-box">
+            <h3>1. Klick-Spiel</h3>
+            <button id="click-button">Klick mich!</button>
+            <p>Dein Score: <span id="click-score">0</span></p>
+        </div>
+        <div class="game-box">
+            <h3>2. Zahlenraten</h3>
+            <p>Rate eine Zahl zwischen 1 und 10:</p>
+            <input type="number" id="guess-input" placeholder="Deine Zahl">
+            <button id="guess-button">Rate</button>
+            <p id="guess-result"></p>
+        </div>
+        <div class="game-box">
+            <h3>3. Timer-Spiel</h3>
+            <button id="start-timer">Starte den Timer</button>
+            <p>Zeit: <span id="timer-time">0</span> Sekunden</p>
+        </div>
+        <div class="game-box">
+            <h3>4. Hintergrundfarbe ändern</h3>
+            <button id="color-button">Farbe ändern</button>
+        </div>
+        <div class="game-box">
+            <h3>5. Zählen</h3>
+            <button id="counter-button">+1</button>
+            <p>Zähler: <span id="counter-value">0</span></p>
+        </div>
+        <div class="game-box">
+            <h3>6. Reaktionsspiel</h3>
+            <button id="reaction-start">Reaktionsspiel starten</button>
+            <p id="reaction-result"></p>
+        </div>
+        <div class="game-box">
+            <h3>7. Textumkehrer</h3>
+            <input type="text" id="text-input" placeholder="Gib einen Text ein">
+            <button id="reverse-button">Text umkehren</button>
+            <p>Umgekehrter Text: <span id="reversed-text"></span></p>
+        </div>
+        <div class="game-box">
+            <h3>8. Zufällige Zahl</h3>
+            <button id="random-button">Zufällige Zahl</button>
+            <p>Zahl: <span id="random-number"></span></p>
+        </div>
+        <div class="game-box">
+            <h3>9. Text verdoppeln</h3>
+            <input type="text" id="double-input" placeholder="Gib einen Text ein">
+            <button id="double-button">Verdoppeln</button>
+            <p>Verdoppelt: <span id="double-output"></span></p>
+        </div>
+        <div class="game-box">
+            <h3>10. Zufälliger Hintergrund</h3>
+            <button id="bg-random-button">Zufälliger Hintergrund</button>
+        </div>
     </div>
 
     <script>
-        // Benutzerliste
+        // Login-Daten
         const users = [
-            { username: 'Admin', email: 'admin@example.com', role: 'Administrator', password: '1234', status: 'aktiv' },
-            { username: 'TestUser', email: 'user@example.com', role: 'Benutzer', password: 'test', status: 'aktiv' }
+            { username: 'Admin', password: '1234', role: 'Administrator' },
+            { username: 'User', password: 'user', role: 'Benutzer' }
         ];
 
         let currentUser = null;
 
-        // Elemente
         const loginForm = document.getElementById('login-form');
         const loginMessage = document.getElementById('login-message');
-        const userManagement = document.getElementById('user-management');
-        const passwordChangeContainer = document.getElementById('password-change-container');
+        const gamesContainer = document.getElementById('games-container');
         const logoutButton = document.getElementById('logout-button');
-        const userTable = document.getElementById('user-table');
-        const addUserForm = document.getElementById('add-user-form');
-        const newUsernameInput = document.getElementById('new-username');
-        const newEmailInput = document.getElementById('new-email');
-        const newRoleSelect = document.getElementById('new-role');
 
-        const passwordChangeForm = document.getElementById('password-change-form');
-        const passwordChangeMessage = document.getElementById('password-change-message');
-
-        // Benutzerliste anzeigen
-        function renderUsers() {
-            userTable.innerHTML = '';
-            users.forEach((user, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${user.username}</td>
-                    <td>${user.email}</td>
-                    <td>${user.role}</td>
-                    <td>${user.status}</td>
-                    <td>
-                        ${currentUser.role === 'Administrator' ? `
-                            <button class="block-user-button" data-index="${index}">${user.status === 'aktiv' ? 'Sperren' : 'Entsperren'}</button>
-                            <button class="remove-user-button" data-index="${index}">Löschen</button>
-                        ` : ''}
-                    </td>
-                `;
-                userTable.appendChild(row);
-            });
-        }
-
-        // Benutzer hinzufügen
-        addUserForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (newRoleSelect.value === 'Administrator' && currentUser.role !== 'Administrator') {
-                alert('Nur Administratoren können Admin-Konten erstellen.');
-                return;
-            }
-            users.push({
-                username: newUsernameInput.value,
-                email: newEmailInput.value,
-                role: newRoleSelect.value,
-                password: 'default',
-                status: 'aktiv'
-            });
-            renderUsers();
-            newUsernameInput.value = '';
-            newEmailInput.value = '';
-        });
-
-        // Benutzerverwaltung-Events
-        userTable.addEventListener('click', (e) => {
-            const index = e.target.dataset.index;
-            if (e.target.classList.contains('remove-user-button')) {
-                users.splice(index, 1);
-                renderUsers();
-            } else if (e.target.classList.contains('block-user-button')) {
-                users[index].status = users[index].status === 'aktiv' ? 'gesperrt' : 'aktiv';
-                renderUsers();
-            }
-        });
-
-        // Passwort ändern
-        passwordChangeForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (passwordChangeForm['current-password'].value === currentUser.password) {
-                currentUser.password = passwordChangeForm['new-password'].value;
-                passwordChangeMessage.textContent = 'Passwort erfolgreich geändert!';
-                passwordChangeMessage.style.color = 'green';
-                passwordChangeMessage.classList.remove('hidden');
-            } else {
-                passwordChangeMessage.textContent = 'Falsches aktuelles Passwort!';
-                passwordChangeMessage.style.color = 'red';
-                passwordChangeMessage.classList.remove('hidden');
-            }
-        });
-
-        // Login
+        // Login-Handler
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const username = loginForm['username'].value;
             const password = loginForm['password'].value;
-            const user = users.find(u => u.username === username && u.password === password && u.status === 'aktiv');
+            const user = users.find(u => u.username === username && u.password === password);
             if (user) {
                 currentUser = user;
                 loginForm.style.display = 'none';
                 logoutButton.classList.remove('hidden');
-                passwordChangeContainer.classList.remove('hidden');
-                if (user.role === 'Administrator') userManagement.classList.remove('hidden');
-                renderUsers();
+                if (user.role === 'Benutzer') {
+                    gamesContainer.classList.remove('hidden');
+                }
             } else {
-                loginMessage.textContent = 'Falsche Login-Daten oder Konto gesperrt!';
-                loginMessage.style.color = 'red';
+                loginMessage.textContent = 'Falsche Login-Daten!';
                 loginMessage.classList.remove('hidden');
             }
         });
 
         // Logout
         logoutButton.addEventListener('click', () => location.reload());
+
+        // Spiele-Logik
+        // 1. Klick-Spiel
+        let clickScore = 0;
+        document.getElementById('click-button').addEventListener('click', () => {
+            clickScore++;
+            document.getElementById('click-score').textContent = clickScore;
+        });
+
+        // 2. Zahlenraten
+        document.getElementById('guess-button').addEventListener('click', () => {
+            const randomNumber = Math.floor(Math.random() * 10) + 1;
+            const guess = parseInt(document.getElementById('guess-input').value, 10);
+            const result = guess === randomNumber ? 'Richtig!' : `Falsch! Die Zahl war ${randomNumber}`;
+            document.getElementById('guess-result').textContent = result;
+        });
+
+        // 3. Timer-Spiel
+        let timer = 0;
+        let timerInterval;
+        document.getElementById('start-timer').addEventListener('click', () => {
+            clearInterval(timerInterval);
+            timer = 0;
+            timerInterval = setInterval(() => {
+                timer++;
+                document.getElementById('timer-time').textContent = timer;
+            }, 1000);
+        });
+
+        // 4. Hintergrundfarbe ändern
+        document.getElementById('color-button').addEventListener('click', () => {
+            document.body.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+        });
+
+        // 5. Zählen
+        let counter = 0;
+        document.getElementById('counter-button').addEventListener('click', () => {
+            counter++;
+            document.getElementById('counter-value').textContent = counter;
+        });
+
+        // 6. Reaktionsspiel
+        document.getElementById('reaction-start').addEventListener('click', () => {
+            const start = Date.now();
+            setTimeout(() => {
+                const reactionTime = Date.now() - start;
+                document.getElementById('reaction-result').textContent = `Reaktionszeit: ${reactionTime} ms`;
+            }, Math.random() * 2000 + 1000);
+        });
+
+        // 7. Textumkehrer
+        document.getElementById('reverse-button').addEventListener('click', () => {
+            const text = document.getElementById('text-input').value;
+            const reversed = text.split('').reverse().join('');
+            document.getElementById('reversed-text').textContent = reversed;
+        });
+
+        // 8. Zufällige Zahl
+        document.getElementById('random-button').addEventListener('click', () => {
+            const randomNumber = Math.floor(Math.random() * 100) + 1;
+            document.getElementById('random-number').textContent = randomNumber;
+        });
+
+        // 9. Text verdoppeln
+        document.getElementById('double-button').addEventListener('click', () => {
+            const text = document.getElementById('double-input').value;
+            document.getElementById('double-output').textContent = text + text;
+        });
+
+        // 10. Zufälliger Hintergrund
+        document.getElementById('bg-random-button').addEventListener('click', () => {
+            document.body.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+        });
     </script>
 </body>
 </html>
