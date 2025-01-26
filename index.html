@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spiel mit Geheimem Admin-Bereich</title>
+  <title>Spielewelt mit Admin-Bereich</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -46,137 +46,216 @@
     #secret-login, #admin-menu {
       display: none;
     }
-    #tap-area {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      width: 50px;
-      height: 50px;
-      background: transparent; /* Unsichtbar */
-      cursor: pointer;
+    .game-container {
+      margin-bottom: 20px;
     }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
+    p {
       margin: 10px 0;
-    }
-    .admin-output {
-      margin-top: 20px;
-      padding: 10px;
-      background: #ecf0f1;
-      border-radius: 5px;
-      color: #2c3e50;
     }
   </style>
 </head>
 <body>
-  <h1>Willkommen in unserer Spielewelt</h1>
+  <h1>Willkommen in der Spielewelt</h1>
 
-  <!-- Unsichtbarer Bereich zum Tippen -->
-  <div id="tap-area" onclick="incrementTapCount()"></div>
-
-  <!-- Spielbereich -->
   <div id="game">
-    <h2>Spiel: Rate die Zahl</h2>
-    <p>Errate die Zahl zwischen 1 und 10!</p>
-    <input type="number" id="guess" placeholder="Dein Tipp" min="1" max="10">
-    <button onclick="checkGuess()">Prüfen</button>
-    <p id="result"></p>
-  </div>
-
-  <!-- Geheimer Login -->
-  <div id="secret-login">
-    <h2>Geheimer Login</h2>
-    <form onsubmit="handleLogin(event)">
-      <input type="text" id="username" placeholder="Benutzername" required>
-      <input type="password" id="password" placeholder="Passwort" required>
-      <button type="submit">Einloggen</button>
-    </form>
-    <p id="login-result"></p>
-  </div>
-
-  <!-- Admin-Menü -->
-  <div id="admin-menu">
-    <h2>Admin-Menü</h2>
-    <p>Willkommen, Admin! Hier sind deine Funktionen:</p>
-    <ul>
-      <li><button onclick="viewLogs()">📜 Logs anzeigen</button></li>
-      <li><button onclick="manageUsers()">👥 Benutzer verwalten</button></li>
-      <li><button onclick="settings()">⚙️ Einstellungen ändern</button></li>
-      <li><button onclick="serverStatus()">📊 Serverstatus prüfen</button></li>
-      <li><button onclick="createBackup()">💾 Backup erstellen</button></li>
-      <li><button onclick="sendNotification()">📢 Benachrichtigungen senden</button></li>
-      <li><button onclick="analyzeData()">📈 Daten analysieren</button></li>
-      <li><button onclick="clearCache()">🧹 Cache leeren</button></li>
-      <li><button onclick="updateSystem()">🔄 System aktualisieren</button></li>
-      <li><button onclick="deleteLogs()">🗑️ Logs löschen</button></li>
-    </ul>
-    <div class="admin-output" id="admin-output">
-      <p>Hier werden Admin-Ergebnisse angezeigt...</p>
+    <!-- 1. Spiel: Rate die Zahl -->
+    <div class="game-container">
+      <h2>Spiel 1: Rate die Zahl</h2>
+      <p>Errate die Zahl zwischen 1 und 10!</p>
+      <input type="number" id="guess" placeholder="Dein Tipp" min="1" max="10">
+      <button onclick="checkGuess()">Prüfen</button>
+      <p id="result"></p>
     </div>
-    <button onclick="logout()">🔒 Logout</button>
+
+    <!-- 2. Spiel: Zahlen-Addieren -->
+    <div class="game-container">
+      <h2>Spiel 2: Zahlen-Addieren</h2>
+      <p id="addition-task"></p>
+      <input type="number" id="addition-answer" placeholder="Deine Antwort">
+      <button onclick="checkAddition()">Antwort prüfen</button>
+      <p id="addition-result"></p>
+    </div>
+
+    <!-- 3. Spiel: Farbraten -->
+    <div class="game-container">
+      <h2>Spiel 3: Farbraten</h2>
+      <p>Errate, welche Farbe ausgewählt wurde!</p>
+      <button onclick="checkColor('rot')">Rot</button>
+      <button onclick="checkColor('blau')">Blau</button>
+      <button onclick="checkColor('grün')">Grün</button>
+      <p id="color-result"></p>
+    </div>
+
+    <!-- 4. Spiel: Münzwurf -->
+    <div class="game-container">
+      <h2>Spiel 4: Münzwurf</h2>
+      <p>Rate, ob Kopf oder Zahl kommt:</p>
+      <button onclick="coinFlip('Kopf')">Kopf</button>
+      <button onclick="coinFlip('Zahl')">Zahl</button>
+      <p id="coin-result"></p>
+    </div>
+
+    <!-- 5. Spiel: Würfeln -->
+    <div class="game-container">
+      <h2>Spiel 5: Würfeln</h2>
+      <p>Würfle und sieh, was du bekommst!</p>
+      <button onclick="rollDice()">Würfeln</button>
+      <p id="dice-result"></p>
+    </div>
+
+    <!-- 6. Spiel: Wort-Raten -->
+    <div class="game-container">
+      <h2>Spiel 6: Wort-Raten</h2>
+      <p>Gib ein Wort ein und prüfe, ob es das gesuchte ist!</p>
+      <input type="text" id="word-guess" placeholder="Dein Wort">
+      <button onclick="checkWord()">Prüfen</button>
+      <p id="word-result"></p>
+    </div>
+
+    <!-- 7. Spiel: Schnellklicker -->
+    <div class="game-container">
+      <h2>Spiel 7: Schnellklicker</h2>
+      <p>Klicke so oft wie möglich in 5 Sekunden!</p>
+      <button onclick="startClickerGame()">Start</button>
+      <p id="click-result"></p>
+    </div>
+
+    <!-- 8. Spiel: Zahlen-Quiz -->
+    <div class="game-container">
+      <h2>Spiel 8: Zahlen-Quiz</h2>
+      <p>Welche Zahl kommt als Nächstes in der Reihe? 2, 4, 6, ...</p>
+      <input type="number" id="quiz-answer" placeholder="Deine Antwort">
+      <button onclick="checkQuiz()">Antwort prüfen</button>
+      <p id="quiz-result"></p>
+    </div>
+
+    <!-- 9. Spiel: Reaktionszeit -->
+    <div class="game-container">
+      <h2>Spiel 9: Reaktionszeit</h2>
+      <p>Klicke auf den Button, sobald er grün wird!</p>
+      <button id="reaction-button" disabled>Warten...</button>
+      <p id="reaction-result"></p>
+    </div>
+
+    <!-- 10. Spiel: Mathe-Test -->
+    <div class="game-container">
+      <h2>Spiel 10: Mathe-Test</h2>
+      <p id="math-task"></p>
+      <input type="number" id="math-answer" placeholder="Deine Antwort">
+      <button onclick="checkMath()">Antwort prüfen</button>
+      <p id="math-result"></p>
+    </div>
   </div>
 
   <script>
-    // Tippen-Zähler
-    let tapCount = 0;
-
-    function incrementTapCount() {
-      tapCount++;
-      if (tapCount === 10) {
-        document.getElementById('secret-login').style.display = 'block';
-        alert('🔓 Geheimer Login wurde freigeschaltet!');
-      }
-    }
-
-    // Zufallszahl für das Spiel
+    // Spiel 1: Rate die Zahl
     const randomNumber = Math.floor(Math.random() * 10) + 1;
-
     function checkGuess() {
       const userGuess = parseInt(document.getElementById('guess').value);
-      const result = document.getElementById('result');
-      result.textContent = userGuess === randomNumber
-        ? '🎉 Glückwunsch! Du hast richtig geraten!'
-        : '❌ Falsch geraten! Versuch es nochmal.';
+      document.getElementById('result').textContent =
+        userGuess === randomNumber
+          ? '🎉 Glückwunsch! Richtig geraten.'
+          : '❌ Falsch. Versuch es nochmal.';
     }
 
-    function handleLogin(event) {
-      event.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const loginResult = document.getElementById('login-result');
-      
-      if (username === 'admin' && password === 'geheim') {
-        loginResult.textContent = '✅ Login erfolgreich!';
-        document.getElementById('secret-login').style.display = 'none';
-        document.getElementById('admin-menu').style.display = 'block';
-      } else {
-        loginResult.textContent = '❌ Falsche Zugangsdaten!';
-      }
+    // Spiel 2: Zahlen-Addieren
+    let num1 = Math.floor(Math.random() * 50) + 1;
+    let num2 = Math.floor(Math.random() * 50) + 1;
+    document.getElementById('addition-task').textContent = `Was ist ${num1} + ${num2}?`;
+    function checkAddition() {
+      const answer = parseInt(document.getElementById('addition-answer').value);
+      document.getElementById('addition-result').textContent =
+        answer === num1 + num2
+          ? '🎉 Richtig!'
+          : '❌ Falsch. Versuchs nochmal.';
     }
 
-    // Admin-Funktionen
-    function setAdminOutput(message) {
-      document.getElementById('admin-output').innerHTML = `<p>${message}</p>`;
+    // Spiel 3: Farbraten
+    const colors = ['rot', 'blau', 'grün'];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    function checkColor(color) {
+      document.getElementById('color-result').textContent =
+        color === randomColor
+          ? `🎉 Richtig! Die Farbe war ${randomColor}.`
+          : `❌ Falsch. Es war ${randomColor}.`;
     }
 
-    function viewLogs() { setAdminOutput('📜 Logs: Keine Fehler gefunden.'); }
-    function manageUsers() { setAdminOutput('👥 Benutzer: 12 aktive Benutzer.'); }
-    function settings() { setAdminOutput('⚙️ Einstellungen erfolgreich geändert.'); }
-    function serverStatus() { setAdminOutput('📊 Serverstatus: Alle Systeme laufen stabil.'); }
-    function createBackup() { setAdminOutput('💾 Backup wurde erfolgreich erstellt.'); }
-    function sendNotification() { setAdminOutput('📢 Benachrichtigung wurde gesendet.'); }
-    function analyzeData() { setAdminOutput('📈 Datenanalyse: 80% der Benutzer sind aktiv.'); }
-    function clearCache() { setAdminOutput('🧹 Cache erfolgreich geleert.'); }
-    function updateSystem() { setAdminOutput('🔄 System wurde aktualisiert.'); }
-    function deleteLogs() { setAdminOutput('🗑️ Logs erfolgreich gelöscht.'); }
+    // Spiel 4: Münzwurf
+    function coinFlip(choice) {
+      const result = Math.random() < 0.5 ? 'Kopf' : 'Zahl';
+      document.getElementById('coin-result').textContent =
+        choice === result
+          ? `🎉 Richtig! Es ist ${result}.`
+          : `❌ Falsch. Es war ${result}.`;
+    }
 
-    function logout() {
-      document.getElementById('admin-menu').style.display = 'none';
-      tapCount = 0; // Zurücksetzen des Tap-Counters
-      alert('🔒 Du wurdest ausgeloggt!');
+    // Spiel 5: Würfeln
+    function rollDice() {
+      const diceResult = Math.floor(Math.random() * 6) + 1;
+      document.getElementById('dice-result').textContent = `🎲 Du hast eine ${diceResult} geworfen.`;
+    }
+
+    // Spiel 6: Wort-Raten
+    const wordToGuess = 'openai';
+    function checkWord() {
+      const word = document.getElementById('word-guess').value.toLowerCase();
+      document.getElementById('word-result').textContent =
+        word === wordToGuess
+          ? '🎉 Richtig! Das Wort ist "openai".'
+          : '❌ Falsch. Versuch es nochmal.';
+    }
+
+    // Spiel 7: Schnellklicker
+    let clickCount = 0;
+    let clickerTimer;
+    function startClickerGame() {
+      clickCount = 0;
+      document.getElementById('click-result').textContent = 'Starte das Spiel...';
+      clickerTimer = setTimeout(() => {
+        document.getElementById('click-result').textContent = `Du hast ${clickCount} Klicks geschafft!`;
+      }, 5000);
+      document.body.addEventListener('click', () => clickCount++);
+    }
+
+    // Spiel 8: Zahlen-Quiz
+    function checkQuiz() {
+      const answer = parseInt(document.getElementById('quiz-answer').value);
+      document.getElementById('quiz-result').textContent =
+        answer === 8
+          ? '🎉 Richtig! Die nächste Zahl ist 8.'
+          : '❌ Falsch. Versuch es nochmal.';
+    }
+
+    // Spiel 9: Reaktionszeit
+    let reactionStart;
+    function startReactionGame() {
+      const delay = Math.random() * 3000 + 1000; // 1-4 Sekunden Verzögerung
+      setTimeout(() => {
+        document.getElementById('reaction-button').textContent = 'Jetzt!';
+        document.getElementById('reaction-button').style.background = 'green';
+        document.getElementById('reaction-button').disabled = false;
+        reactionStart = Date.now();
+      }, delay);
+    }
+    document.getElementById('reaction-button').addEventListener('click', () => {
+      const reactionTime = Date.now() - reactionStart;
+      document.getElementById('reaction-result').textContent = `Reaktionszeit: ${reactionTime} ms.`;
+      document.getElementById('reaction-button').disabled = true;
+      document.getElementById('reaction-button').textContent = 'Warten...';
+      document.getElementById('reaction-button').style.background = '';
+    });
+    startReactionGame();
+
+    // Spiel 10: Mathe-Test
+    let mathNum1 = Math.floor(Math.random() * 20) + 1;
+    let mathNum2 = Math.floor(Math.random() * 20) + 1;
+    document.getElementById('math-task').textContent = `Was ist ${mathNum1} * ${mathNum2}?`;
+    function checkMath() {
+      const answer = parseInt(document.getElementById('math-answer').value);
+      document.getElementById('math-result').textContent =
+        answer === mathNum1 * mathNum2
+          ? '🎉 Richtig!'
+          : '❌ Falsch. Versuch es nochmal.';
     }
   </script>
 </body>
