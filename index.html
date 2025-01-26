@@ -10,12 +10,11 @@
       text-align: center;
       margin: 20px;
     }
-    #game {
+    #game, #secret-login, #admin-menu {
       margin-top: 30px;
     }
-    #secret-login {
+    #secret-login, #admin-menu {
       display: none;
-      margin-top: 30px;
     }
     input {
       padding: 10px;
@@ -35,12 +34,14 @@
   <h1>Willkommen zu unserem kleinen Spiel</h1>
   <p>Errate die Zahl zwischen 1 und 10!</p>
 
+  <!-- Spielbereich -->
   <div id="game">
     <input type="number" id="guess" placeholder="Dein Tipp" min="1" max="10">
     <button onclick="checkGuess()">Prüfen</button>
     <p id="result"></p>
   </div>
 
+  <!-- Geheimer Login -->
   <div id="secret-login">
     <h2>Geheimer Login</h2>
     <form onsubmit="handleLogin(event)">
@@ -49,6 +50,18 @@
       <button type="submit">Einloggen</button>
     </form>
     <p id="login-result"></p>
+  </div>
+
+  <!-- Admin-Menü -->
+  <div id="admin-menu">
+    <h2>Admin-Menü</h2>
+    <p>Willkommen, Admin! Hier sind deine exklusiven Optionen:</p>
+    <ul>
+      <li><button onclick="viewLogs()">Logs anzeigen</button></li>
+      <li><button onclick="manageUsers()">Benutzer verwalten</button></li>
+      <li><button onclick="settings()">Einstellungen</button></li>
+    </ul>
+    <button onclick="logout()">Logout</button>
   </div>
 
   <script>
@@ -82,14 +95,36 @@
       const password = document.getElementById('password').value;
       const loginResult = document.getElementById('login-result');
       
-      // Einfacher Login-Check (für echte Anwendungen: niemals so machen, Backend verwenden!)
+      // Einfacher Login-Check (nur zu Demo-Zwecken)
       if (username === 'admin' && password === 'geheim') {
         loginResult.textContent = '✅ Login erfolgreich!';
         loginResult.style.color = 'green';
+
+        // Geheimer Login-Bereich ausblenden und Admin-Menü anzeigen
+        document.getElementById('secret-login').style.display = 'none';
+        document.getElementById('admin-menu').style.display = 'block';
       } else {
         loginResult.textContent = '❌ Falsche Zugangsdaten!';
         loginResult.style.color = 'red';
       }
+    }
+
+    function viewLogs() {
+      alert('📜 Logs anzeigen: Hier wären alle Admin-Logs sichtbar.');
+    }
+
+    function manageUsers() {
+      alert('👥 Benutzer verwalten: Benutzeroptionen sind verfügbar.');
+    }
+
+    function settings() {
+      alert('⚙️ Einstellungen: Admin-Einstellungen anpassen.');
+    }
+
+    function logout() {
+      alert('🔒 Du wurdest ausgeloggt!');
+      document.getElementById('admin-menu').style.display = 'none';
+      document.getElementById('secret-login').style.display = 'none';
     }
   </script>
 </body>
