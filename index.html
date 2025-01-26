@@ -58,37 +58,42 @@
       border-radius: 5px;
     }
 
-    .counter {
-      font-size: 1.2rem;
-      color: #00ffcc;
-      margin: 20px 0;
-    }
-
     .game-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
       padding: 20px;
     }
 
     .game {
+      margin: 40px auto;
+      max-width: 600px;
       background: rgba(0, 0, 0, 0.8);
       border-radius: 10px;
-      padding: 10px;
+      padding: 20px;
       box-shadow: 0 0 15px #ff7700;
-      transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .game:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px #ffcc00;
-    }
-
-    .game iframe {
-      width: 100%;
-      height: 300px;
-      border: none;
+    canvas {
+      display: block;
+      margin: 20px auto;
+      background: #222;
+      border: 2px solid #ffcc00;
       border-radius: 10px;
+    }
+
+    button {
+      background: #ff7700;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: #ffcc00;
+      color: #000;
     }
 
     footer {
@@ -100,166 +105,131 @@
   </style>
 </head>
 <body>
-  <!-- Header -->
   <h1>Galaxy Spiele</h1>
-
-  <!-- Besucherzähler -->
-  <div class="counter">
-    Du bist Besucher Nr. <span id="visitorCount">...</span>
-  </div>
 
   <!-- Navigationsmenü -->
   <nav>
     <ul>
-      <li><a href="#game1">Snake</a></li>
-      <li><a href="#game2">2048</a></li>
-      <li><a href="#game3">Tic Tac Toe</a></li>
-      <li><a href="#game4">Flappy Bird</a></li>
-      <li><a href="#game5">Minesweeper</a></li>
-      <li><a href="#game6">Pac-Man</a></li>
-      <li><a href="#game7">Brick Breaker</a></li>
-      <li><a href="#game8">Hexa Puzzle</a></li>
-      <li><a href="#game9">Sudoku</a></li>
-      <li><a href="#game10">Bubble Shooter</a></li>
-      <li><a href="#game11">Tetris</a></li>
-      <li><a href="#game12">Pong</a></li>
-      <li><a href="#game13">Asteroids</a></li>
-      <li><a href="#game14">Space Invaders</a></li>
-      <li><a href="#game15">Memory</a></li>
-      <li><a href="#game16">Zahlenrätsel</a></li>
-      <li><a href="#game17">Hangman</a></li>
-      <li><a href="#game18">Schach</a></li>
-      <li><a href="#game19">Reversi</a></li>
-      <li><a href="#game20">Wortsuche</a></li>
+      <li><a href="#snake">Snake</a></li>
+      <li><a href="#tic-tac-toe">Tic Tac Toe</a></li>
+      <li><a href="#memory">Memory</a></li>
     </ul>
   </nav>
 
-  <!-- Spiele-Container -->
   <div class="game-container">
-    <!-- Spiel 1 -->
-    <div id="game1" class="game">
-      <h3>Snake</h3>
-      <iframe src="https://play.snakegame.io/" title="Snake"></iframe>
+    <!-- Snake -->
+    <div id="snake" class="game">
+      <h2>Snake</h2>
+      <canvas id="snakeCanvas" width="400" height="400"></canvas>
+      <button onclick="startSnake()">Spiel starten</button>
+      <script>
+        // Snake-Spiel
+        const canvas = document.getElementById('snakeCanvas');
+        const ctx = canvas.getContext('2d');
+        const grid = 20;
+        let snake = [{ x: grid * 5, y: grid * 5 }];
+        let apple = { x: grid * 10, y: grid * 10 };
+        let direction = { x: 0, y: 0 };
+        let running = false;
+
+        function drawSnake() {
+          ctx.fillStyle = '#00ff00';
+          snake.forEach(part => {
+            ctx.fillRect(part.x, part.y, grid, grid);
+          });
+        }
+
+        function drawApple() {
+          ctx.fillStyle = '#ff0000';
+          ctx.fillRect(apple.x, apple.y, grid, grid);
+        }
+
+        function updateSnake() {
+          if (!running) return;
+          const head = { x: snake[0].x + direction.x * grid, y: snake[0].y + direction.y * grid };
+
+          // Check Kollision
+          if (head.x < 0 || head.y < 0 || head.x >= canvas.width || head.y >= canvas.height || 
+              snake.some(part => part.x === head.x && part.y === head.y)) {
+            running = false;
+            alert('Spiel vorbei!');
+            return;
+          }
+
+          snake.unshift(head);
+          if (head.x === apple.x && head.y === apple.y) {
+            apple = { x: Math.floor(Math.random() * 20) * grid, y: Math.floor(Math.random() * 20) * grid };
+          } else {
+            snake.pop();
+          }
+        }
+
+        function gameLoop() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawSnake();
+          drawApple();
+          updateSnake();
+          if (running) requestAnimationFrame(gameLoop);
+        }
+
+        function startSnake() {
+          running = true;
+          direction = { x: 0, y: -1 };
+          snake = [{ x: grid * 5, y: grid * 5 }];
+          apple = { x: grid * 10, y: grid * 10 };
+          gameLoop();
+        }
+
+        window.addEventListener('keydown', e => {
+          const keyMap = { ArrowUp: { x: 0, y: -1 }, ArrowDown: { x: 0, y: 1 }, ArrowLeft: { x: -1, y: 0 }, ArrowRight: { x: 1, y: 0 } };
+          if (keyMap[e.key] && !(keyMap[e.key].x === -direction.x && keyMap[e.key].y === -direction.y)) {
+            direction = keyMap[e.key];
+          }
+        });
+      </script>
     </div>
 
-    <!-- Spiel 2 -->
-    <div id="game2" class="game">
-      <h3>2048</h3>
-      <iframe src="https://play2048.co/" title="2048"></iframe>
-    </div>
+    <!-- Tic Tac Toe -->
+    <div id="tic-tac-toe" class="game">
+      <h2>Tic Tac Toe</h2>
+      <div id="ticTacToeBoard" style="display: grid; grid-template-columns: repeat(3, 100px); gap: 5px; margin: auto;">
+        <script>
+          const ticTacToeBoard = document.getElementById('ticTacToeBoard');
+          const cells = Array.from({ length: 9 }, (_, i) => {
+            const cell = document.createElement('div');
+            cell.style.width = '100px';
+            cell.style.height = '100px';
+            cell.style.background = '#444';
+            cell.style.color = 'white';
+            cell.style.fontSize = '2rem';
+            cell.style.textAlign = 'center';
+            cell.style.lineHeight = '100px';
+            cell.style.cursor = 'pointer';
+            cell.setAttribute('data-index', i);
+            ticTacToeBoard.appendChild(cell);
+            return cell;
+          });
 
-    <!-- Spiel 3 -->
-    <div id="game3" class="game">
-      <h3>Tic Tac Toe</h3>
-      <iframe src="https://playtictactoe.org/" title="Tic Tac Toe"></iframe>
-    </div>
+          let currentPlayer = 'X';
+          const boardState = Array(9).fill(null);
 
-    <!-- Spiel 4 -->
-    <div id="game4" class="game">
-      <h3>Flappy Bird</h3>
-      <iframe src="https://flappybird.io/" title="Flappy Bird"></iframe>
-    </div>
-
-    <!-- Spiel 5 -->
-    <div id="game5" class="game">
-      <h3>Minesweeper</h3>
-      <iframe src="https://minesweeper.online/" title="Minesweeper"></iframe>
-    </div>
-
-    <!-- Spiel 6 -->
-    <div id="game6" class="game">
-      <h3>Pac-Man</h3>
-      <iframe src="https://worldsbiggestpacman.com/" title="Pac-Man"></iframe>
-    </div>
-
-    <!-- Spiel 7 -->
-    <div id="game7" class="game">
-      <h3>Brick Breaker</h3>
-      <iframe src="https://www.brickbreaker.de/" title="Brick Breaker"></iframe>
-    </div>
-
-    <!-- Spiel 8 -->
-    <div id="game8" class="game">
-      <h3>Hexa Puzzle</h3>
-      <iframe src="https://hexa-puzzle.com/" title="Hexa Puzzle"></iframe>
-    </div>
-
-    <!-- Spiel 9 -->
-    <div id="game9" class="game">
-      <h3>Sudoku</h3>
-      <iframe src="https://sudoku.com/" title="Sudoku"></iframe>
-    </div>
-
-    <!-- Spiel 10 -->
-    <div id="game10" class="game">
-      <h3>Bubble Shooter</h3>
-      <iframe src="https://www.bubbleshooter.net/" title="Bubble Shooter"></iframe>
-    </div>
-
-    <!-- Spiel 11 bis 20 -->
-    <div id="game11" class="game">
-      <h3>Tetris</h3>
-      <iframe src="https://tetris.com/play-tetris" title="Tetris"></iframe>
-    </div>
-
-    <div id="game12" class="game">
-      <h3>Pong</h3>
-      <iframe src="https://pong-2.com/" title="Pong"></iframe>
-    </div>
-
-    <div id="game13" class="game">
-      <h3>Asteroids</h3>
-      <iframe src="https://playclassic.games/games/arcade/asteroids/" title="Asteroids"></iframe>
-    </div>
-
-    <div id="game14" class="game">
-      <h3>Space Invaders</h3>
-      <iframe src="https://www.retrogames.cz/play_021-SpaceInvaders.php" title="Space Invaders"></iframe>
-    </div>
-
-    <div id="game15" class="game">
-      <h3>Memory</h3>
-      <iframe src="https://www.memozor.com/memory-games" title="Memory"></iframe>
-    </div>
-
-    <div id="game16" class="game">
-      <h3>Zahlenrätsel</h3>
-      <iframe src="https://sudoku.com/numbers-puzzle/" title="Zahlenrätsel"></iframe>
-    </div>
-
-    <div id="game17" class="game">
-      <h3>Hangman</h3>
-      <iframe src="https://www.hangmanwords.com/play" title="Hangman"></iframe>
-    </div>
-
-    <div id="game18" class="game">
-      <h3>Schach</h3>
-      <iframe src="https://www.chess.com/play/computer" title="Schach"></iframe>
-    </div>
-
-    <div id="game19" class="game">
-      <h3>Reversi</h3>
-      <iframe src="https://www.flyordie.com/reversi/" title="Reversi"></iframe>
-    </div>
-
-    <div id="game20" class="game">
-      <h3>Wortsuche</h3>
-      <iframe src="https://thewordsearch.com/" title="Wortsuche"></iframe>
+          cells.forEach(cell => {
+            cell.addEventListener('click', () => {
+              const index = cell.getAttribute('data-index');
+              if (!boardState[index]) {
+                boardState[index] = currentPlayer;
+                cell.textContent = currentPlayer;
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+              }
+            });
+          });
+        </script>
+      </div>
     </div>
   </div>
 
-  <!-- Footer -->
   <footer>
     © 2025 Galaxy Spiele - Alle Rechte vorbehalten.
   </footer>
-
-  <!-- Besucherzähler Script -->
-  <script>
-    const visitorCountKey = 'visitorCount';
-    let visitorCount = localStorage.getItem(visitorCountKey) || 0;
-    visitorCount++;
-    localStorage.setItem(visitorCountKey, visitorCount);
-    document.getElementById('visitorCount').textContent = visitorCount;
-  </script>
 </body>
 </html>
