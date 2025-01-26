@@ -1,220 +1,160 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spiele-Sammlung</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(120deg, #89f7fe, #66a6ff);
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galaxy Spiele</title>
+  <style>
+    /* Galaxy-Style */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #000428, #004e92);
+      color: white;
+      text-align: center;
+      overflow-x: hidden;
+    }
 
-        .container {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            max-width: 900px;
-            width: 100%;
-            text-align: center;
-        }
+    h1 {
+      margin-top: 20px;
+      font-size: 3rem;
+      color: #ffcc00;
+      text-shadow: 0 0 10px #ffcc00, 0 0 20px #ff7700;
+    }
 
-        h1 {
-            color: #4a90e2;
-            margin-bottom: 10px;
-            font-size: 2.5rem;
-        }
+    .counter {
+      font-size: 1.2rem;
+      color: #00ffcc;
+      margin: 20px 0;
+    }
 
-        p {
-            margin: 10px 0;
-        }
+    .game-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
 
-        .visitor {
-            background: #f0f9ff;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: inline-block;
-            color: #333;
-            font-weight: bold;
-        }
+    .game {
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 0 15px #ff7700;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
 
-        .game {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
+    .game:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #ffcc00;
+    }
 
-        .game h2 {
-            color: #333;
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
+    .game iframe {
+      width: 100%;
+      height: 300px;
+      border: none;
+      border-radius: 10px;
+    }
 
-        .btn {
-            display: inline-block;
-            background: #4a90e2;
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            background: #357abd;
-            transform: scale(1.05);
-        }
-
-        .input-box {
-            padding: 10px;
-            width: 50%;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-
-        #typingTimer {
-            font-size: 1.2rem;
-            color: #4a90e2;
-        }
-    </style>
+    footer {
+      margin-top: 40px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Willkommen zu unseren Spielen!</h1>
-        <p class="visitor">Besucherzähler: <span id="visitorCounter">0</span></p>
+  <h1>Galaxy Spiele</h1>
 
-        <!-- Klick-Spiel -->
-        <div class="game">
-            <h2>Klick-Spiel</h2>
-            <p>Klicke auf den Button, um Punkte zu sammeln!</p>
-            <button class="btn" id="clickButton">Klicke mich!</button>
-            <p>Punkte: <span id="clickScore">0</span></p>
-        </div>
+  <!-- Besucherzähler -->
+  <div class="counter">
+    Du bist Besucher Nr. <span id="visitorCount">...</span>
+  </div>
 
-        <!-- Zahlenratespiel -->
-        <div class="game">
-            <h2>Zahlenratespiel</h2>
-            <p>Errate eine Zahl zwischen 1 und 10!</p>
-            <input type="number" class="input-box" id="guessInput" min="1" max="10" placeholder="Deine Zahl">
-            <button class="btn" id="guessButton">Raten</button>
-            <p id="guessResult"></p>
-        </div>
-
-        <!-- Tipp-Spiel -->
-        <div class="game">
-            <h2>Tipp-Spiel</h2>
-            <p>Wie schnell kannst du diesen Text abtippen?</p>
-            <p id="typingText">Der schnelle braune Fuchs springt über den faulen Hund.</p>
-            <input type="text" class="input-box" id="typingInput" placeholder="Tipp hier...">
-            <p id="typingResult"></p>
-        </div>
-
-        <!-- Schnelles Tippen -->
-        <div class="game">
-            <h2>Schnelles Tippen</h2>
-            <p>Klicke so oft wie möglich innerhalb von 5 Sekunden!</p>
-            <button class="btn" id="fastClickButton">Starte Schnellklicken!</button>
-            <p id="fastClickScore">Punkte: 0</p>
-            <p id="fastClickTimer"></p>
-        </div>
+  <!-- Spiele-Container -->
+  <div class="game-container">
+    <!-- Spiel 1 -->
+    <div class="game">
+      <h3>Snake</h3>
+      <iframe src="https://play.snakegame.io/" title="Snake"></iframe>
     </div>
 
-    <script>
-        // Besucherzähler
-        const visitorCounter = document.getElementById("visitorCounter");
-        let visits = localStorage.getItem("visits") || 0;
-        visits++;
-        localStorage.setItem("visits", visits);
-        visitorCounter.textContent = visits;
+    <!-- Spiel 2 -->
+    <div class="game">
+      <h3>2048</h3>
+      <iframe src="https://play2048.co/" title="2048"></iframe>
+    </div>
 
-        // Klick-Spiel
-        const clickButton = document.getElementById("clickButton");
-        const clickScore = document.getElementById("clickScore");
-        let score = 0;
-        clickButton.addEventListener("click", () => {
-            score++;
-            clickScore.textContent = score;
-        });
+    <!-- Spiel 3 -->
+    <div class="game">
+      <h3>Tic Tac Toe</h3>
+      <iframe src="https://playtictactoe.org/" title="Tic Tac Toe"></iframe>
+    </div>
 
-        // Zahlenratespiel
-        const guessButton = document.getElementById("guessButton");
-        const guessInput = document.getElementById("guessInput");
-        const guessResult = document.getElementById("guessResult");
-        let randomNumber = Math.floor(Math.random() * 10) + 1;
+    <!-- Spiel 4 -->
+    <div class="game">
+      <h3>Flappy Bird</h3>
+      <iframe src="https://flappybird.io/" title="Flappy Bird"></iframe>
+    </div>
 
-        guessButton.addEventListener("click", () => {
-            const userGuess = parseInt(guessInput.value);
-            if (userGuess === randomNumber) {
-                guessResult.textContent = "Richtig! 🎉 Versuche eine neue Zahl!";
-                randomNumber = Math.floor(Math.random() * 10) + 1;
-            } else {
-                guessResult.textContent = `Falsch! Versuche es erneut!`;
-            }
-        });
+    <!-- Spiel 5 -->
+    <div class="game">
+      <h3>Minesweeper</h3>
+      <iframe src="https://minesweeper.online/" title="Minesweeper"></iframe>
+    </div>
 
-        // Tipp-Spiel
-        const typingText = document.getElementById("typingText").innerText;
-        const typingInput = document.getElementById("typingInput");
-        const typingResult = document.getElementById("typingResult");
-        let startTime;
+    <!-- Spiel 6 -->
+    <div class="game">
+      <h3>Pac-Man</h3>
+      <iframe src="https://worldsbiggestpacman.com/" title="Pac-Man"></iframe>
+    </div>
 
-        typingInput.addEventListener("input", () => {
-            if (!startTime) startTime = new Date();
-            if (typingInput.value === typingText) {
-                const endTime = new Date();
-                const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
-                typingResult.textContent = `Fertig! Du hast ${timeTaken} Sekunden gebraucht!`;
-                startTime = null;
-                typingInput.value = "";
-            }
-        });
+    <!-- Spiel 7 -->
+    <div class="game">
+      <h3>Brick Breaker</h3>
+      <iframe src="https://www.brickbreaker.de/" title="Brick Breaker"></iframe>
+    </div>
 
-        // Schnelles Tippen
-        const fastClickButton = document.getElementById("fastClickButton");
-        const fastClickScore = document.getElementById("fastClickScore");
-        const fastClickTimer = document.getElementById("fastClickTimer");
-        let fastClicks = 0;
-        let fastGameActive = false;
+    <!-- Spiel 8 -->
+    <div class="game">
+      <h3>Hexa Puzzle</h3>
+      <iframe src="https://hexa-puzzle.com/" title="Hexa Puzzle"></iframe>
+    </div>
 
-        fastClickButton.addEventListener("click", () => {
-            if (!fastGameActive) {
-                fastClicks = 0;
-                fastClickScore.textContent = "Punkte: 0";
-                fastGameActive = true;
-                fastClickButton.textContent = "Klicken!";
-                let timeLeft = 5;
-                fastClickTimer.textContent = `Zeit: ${timeLeft}s`;
-                const interval = setInterval(() => {
-                    timeLeft--;
-                    fastClickTimer.textContent = `Zeit: ${timeLeft}s`;
-                    if (timeLeft === 0) {
-                        clearInterval(interval);
-                        fastGameActive = false;
-                        fastClickTimer.textContent = "Zeit abgelaufen!";
-                        fastClickButton.textContent = "Starte Schnellklicken!";
-                    }
-                }, 1000);
-            } else {
-                fastClicks++;
-                fastClickScore.textContent = `Punkte: ${fastClicks}`;
-            }
-        });
-    </script>
+    <!-- Spiel 9 -->
+    <div class="game">
+      <h3>Sudoku</h3>
+      <iframe src="https://sudoku.com/" title="Sudoku"></iframe>
+    </div>
+
+    <!-- Spiel 10 -->
+    <div class="game">
+      <h3>Bubble Shooter</h3>
+      <iframe src="https://www.bubbleshooter.net/" title="Bubble Shooter"></iframe>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Galaxy Spiele - Alle Rechte vorbehalten.
+  </footer>
+
+  <!-- Besucherzähler Script -->
+  <script>
+    // Lokaler Besucherzähler
+    const visitorCountKey = 'visitorCount';
+
+    // Hole den aktuellen Zähler aus dem LocalStorage
+    let visitorCount = localStorage.getItem(visitorCountKey) || 0;
+
+    // Erhöhe den Zähler
+    visitorCount++;
+
+    // Speichere den neuen Zähler im LocalStorage
+    localStorage.setItem(visitorCountKey, visitorCount);
+
+    // Zeige den Zähler auf der Seite an
+    document.getElementById('visitorCount').textContent = visitorCount;
+  </script>
 </body>
 </html>
