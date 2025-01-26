@@ -47,28 +47,22 @@
       display: none;
     }
     #tap-area {
-      width: 100px;
-      height: 100px;
-      margin: 50px auto;
-      background: #bdc3c7;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #2c3e50;
-      font-size: 18px;
-      font-weight: bold;
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background: transparent; /* Unsichtbar */
+      border: 2px solid transparent; /* Unsichtbar */
       cursor: pointer;
-      user-select: none;
     }
   </style>
 </head>
 <body>
   <h1>Willkommen in unserer Spielewelt</h1>
-  <p>Hier kannst du Spaß haben und mit etwas Glück den geheimen Admin-Bereich entdecken!</p>
 
-  <!-- Tippen-Bereich -->
-  <div id="tap-area" onclick="incrementTapCount()">Drücke hier</div>
+  <!-- Unsichtbarer Bereich zum Tippen -->
+  <div id="tap-area" onclick="incrementTapCount()"></div>
 
   <!-- Spielbereich -->
   <div id="game">
@@ -77,6 +71,22 @@
     <input type="number" id="guess" placeholder="Dein Tipp" min="1" max="10">
     <button onclick="checkGuess()">Prüfen</button>
     <p id="result"></p>
+
+    <hr>
+    <h2>Spiel: Zahlen-Addieren</h2>
+    <p>Addiere zwei zufällige Zahlen!</p>
+    <p id="addition-task"></p>
+    <input type="number" id="addition-answer" placeholder="Deine Antwort">
+    <button onclick="checkAddition()">Antwort prüfen</button>
+    <p id="addition-result"></p>
+
+    <hr>
+    <h2>Spiel: Farbraten</h2>
+    <p>Errate, welche Farbe ausgewählt wurde!</p>
+    <button onclick="checkColor('rot')">Rot</button>
+    <button onclick="checkColor('blau')">Blau</button>
+    <button onclick="checkColor('grün')">Grün</button>
+    <p id="color-result"></p>
   </div>
 
   <!-- Geheimer Login -->
@@ -96,13 +106,9 @@
 
     function incrementTapCount() {
       tapCount++;
-      const tapArea = document.getElementById('tap-area');
-      tapArea.textContent = `${tapCount} / 10`;
-
       if (tapCount === 10) {
         // Geheimer Login sichtbar machen
         document.getElementById('secret-login').style.display = 'block';
-        tapArea.style.display = 'none'; // Tap-Bereich ausblenden
         alert('🔓 Geheimer Login wurde freigeschaltet!');
       }
     }
@@ -120,6 +126,41 @@
       } else {
         result.textContent = '❌ Falsch geraten! Versuch es nochmal.';
         result.style.color = 'red';
+      }
+    }
+
+    // Zahlen-Addieren-Spiel
+    let num1 = Math.floor(Math.random() * 50) + 1;
+    let num2 = Math.floor(Math.random() * 50) + 1;
+
+    document.getElementById('addition-task').textContent = `Was ist ${num1} + ${num2}?`;
+
+    function checkAddition() {
+      const userAnswer = parseInt(document.getElementById('addition-answer').value);
+      const additionResult = document.getElementById('addition-result');
+
+      if (userAnswer === num1 + num2) {
+        additionResult.textContent = '🎉 Richtig! Gut gemacht.';
+        additionResult.style.color = 'green';
+      } else {
+        additionResult.textContent = '❌ Falsch. Versuch es nochmal!';
+        additionResult.style.color = 'red';
+      }
+    }
+
+    // Farbraten-Spiel
+    const colors = ['rot', 'blau', 'grün'];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+    function checkColor(color) {
+      const colorResult = document.getElementById('color-result');
+
+      if (color === randomColor) {
+        colorResult.textContent = `🎉 Richtig! Die Farbe war ${randomColor}.`;
+        colorResult.style.color = randomColor;
+      } else {
+        colorResult.textContent = `❌ Falsch. Die Farbe war nicht ${color}.`;
+        colorResult.style.color = 'red';
       }
     }
 
