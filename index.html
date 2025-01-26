@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Spiel mit Menü, Login und Besucherzähler</title>
+    <title>HTML Spiel mit Login und IP-Übersicht</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,7 +34,7 @@
             background-color: #666;
             border-radius: 5px;
         }
-        #login-container, #spiel-container {
+        #login-container, #spiel-container, #uebersicht-container {
             margin: 20px auto;
             padding: 20px;
             max-width: 500px;
@@ -90,6 +90,12 @@
         <p id="login-message" class="hidden"></p>
     </div>
 
+    <!-- Übersicht (versteckt) -->
+    <div id="uebersicht-container" class="hidden">
+        <h2>IP-Übersicht</h2>
+        <ul id="ip-list"></ul>
+    </div>
+
     <!-- Spiel -->
     <div id="spiel-container">
         <h2>Spiel: Klick auf den Button!</h2>
@@ -108,16 +114,39 @@
         // Login-System
         const loginForm = document.getElementById('login-form');
         const loginMessage = document.getElementById('login-message');
+        const uebersichtContainer = document.getElementById('uebersicht-container');
+        const ipList = document.getElementById('ip-list');
+
+        const ipAdressen = [
+            "192.168.0.1",
+            "192.168.0.2",
+            "192.168.0.3",
+            "192.168.0.4",
+            "192.168.0.5"
+        ]; // Simulierte IP-Adressen
+
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault(); // Verhindert Seiten-Reload
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            // Einfache Authentifizierung
-            if (username === 'admin' && password === '1234') {
+            // Authentifizierung: Linus / Hof123
+            if (username === 'Linus' && password === 'Hof123') {
                 loginMessage.textContent = 'Login erfolgreich! Willkommen, ' + username + '!';
                 loginMessage.style.color = 'green';
                 loginMessage.classList.remove('hidden');
+
+                // Zeige die Übersicht
+                loginForm.style.display = 'none';
+                uebersichtContainer.classList.remove('hidden');
+
+                // Fülle die IP-Liste
+                ipList.innerHTML = '';
+                ipAdressen.forEach(ip => {
+                    const li = document.createElement('li');
+                    li.textContent = ip;
+                    ipList.appendChild(li);
+                });
             } else {
                 loginMessage.textContent = 'Login fehlgeschlagen! Versuche es erneut.';
                 loginMessage.style.color = 'red';
