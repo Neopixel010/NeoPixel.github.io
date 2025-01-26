@@ -53,8 +53,21 @@
       width: 50px;
       height: 50px;
       background: transparent; /* Unsichtbar */
-      border: 2px solid transparent; /* Unsichtbar */
       cursor: pointer;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 10px 0;
+    }
+    .admin-output {
+      margin-top: 20px;
+      padding: 10px;
+      background: #ecf0f1;
+      border-radius: 5px;
+      color: #2c3e50;
     }
   </style>
 </head>
@@ -71,22 +84,6 @@
     <input type="number" id="guess" placeholder="Dein Tipp" min="1" max="10">
     <button onclick="checkGuess()">Prüfen</button>
     <p id="result"></p>
-
-    <hr>
-    <h2>Spiel: Zahlen-Addieren</h2>
-    <p>Addiere zwei zufällige Zahlen!</p>
-    <p id="addition-task"></p>
-    <input type="number" id="addition-answer" placeholder="Deine Antwort">
-    <button onclick="checkAddition()">Antwort prüfen</button>
-    <p id="addition-result"></p>
-
-    <hr>
-    <h2>Spiel: Farbraten</h2>
-    <p>Errate, welche Farbe ausgewählt wurde!</p>
-    <button onclick="checkColor('rot')">Rot</button>
-    <button onclick="checkColor('blau')">Blau</button>
-    <button onclick="checkColor('grün')">Grün</button>
-    <p id="color-result"></p>
   </div>
 
   <!-- Geheimer Login -->
@@ -100,6 +97,28 @@
     <p id="login-result"></p>
   </div>
 
+  <!-- Admin-Menü -->
+  <div id="admin-menu">
+    <h2>Admin-Menü</h2>
+    <p>Willkommen, Admin! Hier sind deine Funktionen:</p>
+    <ul>
+      <li><button onclick="viewLogs()">📜 Logs anzeigen</button></li>
+      <li><button onclick="manageUsers()">👥 Benutzer verwalten</button></li>
+      <li><button onclick="settings()">⚙️ Einstellungen ändern</button></li>
+      <li><button onclick="serverStatus()">📊 Serverstatus prüfen</button></li>
+      <li><button onclick="createBackup()">💾 Backup erstellen</button></li>
+      <li><button onclick="sendNotification()">📢 Benachrichtigungen senden</button></li>
+      <li><button onclick="analyzeData()">📈 Daten analysieren</button></li>
+      <li><button onclick="clearCache()">🧹 Cache leeren</button></li>
+      <li><button onclick="updateSystem()">🔄 System aktualisieren</button></li>
+      <li><button onclick="deleteLogs()">🗑️ Logs löschen</button></li>
+    </ul>
+    <div class="admin-output" id="admin-output">
+      <p>Hier werden Admin-Ergebnisse angezeigt...</p>
+    </div>
+    <button onclick="logout()">🔒 Logout</button>
+  </div>
+
   <script>
     // Tippen-Zähler
     let tapCount = 0;
@@ -107,7 +126,6 @@
     function incrementTapCount() {
       tapCount++;
       if (tapCount === 10) {
-        // Geheimer Login sichtbar machen
         document.getElementById('secret-login').style.display = 'block';
         alert('🔓 Geheimer Login wurde freigeschaltet!');
       }
@@ -119,66 +137,46 @@
     function checkGuess() {
       const userGuess = parseInt(document.getElementById('guess').value);
       const result = document.getElementById('result');
-      
-      if (userGuess === randomNumber) {
-        result.textContent = '🎉 Glückwunsch! Du hast richtig geraten!';
-        result.style.color = 'green';
-      } else {
-        result.textContent = '❌ Falsch geraten! Versuch es nochmal.';
-        result.style.color = 'red';
-      }
-    }
-
-    // Zahlen-Addieren-Spiel
-    let num1 = Math.floor(Math.random() * 50) + 1;
-    let num2 = Math.floor(Math.random() * 50) + 1;
-
-    document.getElementById('addition-task').textContent = `Was ist ${num1} + ${num2}?`;
-
-    function checkAddition() {
-      const userAnswer = parseInt(document.getElementById('addition-answer').value);
-      const additionResult = document.getElementById('addition-result');
-
-      if (userAnswer === num1 + num2) {
-        additionResult.textContent = '🎉 Richtig! Gut gemacht.';
-        additionResult.style.color = 'green';
-      } else {
-        additionResult.textContent = '❌ Falsch. Versuch es nochmal!';
-        additionResult.style.color = 'red';
-      }
-    }
-
-    // Farbraten-Spiel
-    const colors = ['rot', 'blau', 'grün'];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-
-    function checkColor(color) {
-      const colorResult = document.getElementById('color-result');
-
-      if (color === randomColor) {
-        colorResult.textContent = `🎉 Richtig! Die Farbe war ${randomColor}.`;
-        colorResult.style.color = randomColor;
-      } else {
-        colorResult.textContent = `❌ Falsch. Die Farbe war nicht ${color}.`;
-        colorResult.style.color = 'red';
-      }
+      result.textContent = userGuess === randomNumber
+        ? '🎉 Glückwunsch! Du hast richtig geraten!'
+        : '❌ Falsch geraten! Versuch es nochmal.';
     }
 
     function handleLogin(event) {
-      event.preventDefault(); // Verhindert das Neuladen der Seite
+      event.preventDefault();
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
       const loginResult = document.getElementById('login-result');
       
       if (username === 'admin' && password === 'geheim') {
         loginResult.textContent = '✅ Login erfolgreich!';
-        loginResult.style.color = 'green';
-        alert('Willkommen im Admin-Bereich!');
-        // Weitere Logik für den Admin-Bereich könnte hier folgen
+        document.getElementById('secret-login').style.display = 'none';
+        document.getElementById('admin-menu').style.display = 'block';
       } else {
         loginResult.textContent = '❌ Falsche Zugangsdaten!';
-        loginResult.style.color = 'red';
       }
+    }
+
+    // Admin-Funktionen
+    function setAdminOutput(message) {
+      document.getElementById('admin-output').innerHTML = `<p>${message}</p>`;
+    }
+
+    function viewLogs() { setAdminOutput('📜 Logs: Keine Fehler gefunden.'); }
+    function manageUsers() { setAdminOutput('👥 Benutzer: 12 aktive Benutzer.'); }
+    function settings() { setAdminOutput('⚙️ Einstellungen erfolgreich geändert.'); }
+    function serverStatus() { setAdminOutput('📊 Serverstatus: Alle Systeme laufen stabil.'); }
+    function createBackup() { setAdminOutput('💾 Backup wurde erfolgreich erstellt.'); }
+    function sendNotification() { setAdminOutput('📢 Benachrichtigung wurde gesendet.'); }
+    function analyzeData() { setAdminOutput('📈 Datenanalyse: 80% der Benutzer sind aktiv.'); }
+    function clearCache() { setAdminOutput('🧹 Cache erfolgreich geleert.'); }
+    function updateSystem() { setAdminOutput('🔄 System wurde aktualisiert.'); }
+    function deleteLogs() { setAdminOutput('🗑️ Logs erfolgreich gelöscht.'); }
+
+    function logout() {
+      document.getElementById('admin-menu').style.display = 'none';
+      tapCount = 0; // Zurücksetzen des Tap-Counters
+      alert('🔒 Du wurdest ausgeloggt!');
     }
   </script>
 </body>
