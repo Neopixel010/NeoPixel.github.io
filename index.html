@@ -3,172 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Spiele</title>
+    <title>Spiele-Sammlung</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f0f5;
+            background: linear-gradient(120deg, #89f7fe, #66a6ff);
             color: #333;
-        }
-        header {
-            background-color: #4CAF50;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-        }
-        nav {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            background-color: #333;
-            padding: 0.5rem;
-        }
-        nav button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        nav button:hover {
-            background-color: #45a049;
-        }
-        .spielbereich {
-            display: none;
-            padding: 2rem;
-            text-align: center;
-        }
-        .spielbereich.aktiv {
-            display: block;
-        }
-        .tic-tac-toe {
-            display: grid;
-            grid-template-columns: repeat(3, 100px);
-            gap: 5px;
-            margin: 1rem auto;
-        }
-        .feld {
-            width: 100px;
-            height: 100px;
-            border: 1px solid #333;
-            display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        input, button {
-            margin: 0.5rem;
+
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #4a90e2;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        .visitor {
+            background: #f0f9ff;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: inline-block;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .game {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .game h2 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #4a90e2;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #357abd;
+            transform: scale(1.05);
+        }
+
+        .input-box {
+            padding: 10px;
+            width: 50%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        #typingTimer {
+            font-size: 1.2rem;
+            color: #4a90e2;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>HTML Spiele Sammlung</h1>
-    </header>
-    <nav>
-        <button onclick="zeigeSpiel('spiel3')">Tic Tac Toe</button>
-        <button onclick="zeigeSpiel('spiel4')">Zahlenraten</button>
-        <button onclick="zeigeSpiel('spiel5')">Reaktionsspiel</button>
-        <button onclick="zeigeSpiel('spiel6')">Memory</button>
-        <button onclick="zeigeSpiel('spiel7')">Farbrätsel</button>
-    </nav>
+    <div class="container">
+        <h1>Willkommen zu unseren Spielen!</h1>
+        <p class="visitor">Besucherzähler: <span id="visitorCounter">0</span></p>
 
-    <!-- Spiel 3: Tic Tac Toe -->
-    <div id="spiel3" class="spielbereich">
-        <h2>Tic Tac Toe</h2>
-        <div class="tic-tac-toe" id="ticTacToe">
-            <div class="feld" data-index="0"></div>
-            <div class="feld" data-index="1"></div>
-            <div class="feld" data-index="2"></div>
-            <div class="feld" data-index="3"></div>
-            <div class="feld" data-index="4"></div>
-            <div class="feld" data-index="5"></div>
-            <div class="feld" data-index="6"></div>
-            <div class="feld" data-index="7"></div>
-            <div class="feld" data-index="8"></div>
+        <!-- Klick-Spiel -->
+        <div class="game">
+            <h2>Klick-Spiel</h2>
+            <p>Klicke auf den Button, um Punkte zu sammeln!</p>
+            <button class="btn" id="clickButton">Klicke mich!</button>
+            <p>Punkte: <span id="clickScore">0</span></p>
         </div>
-        <p id="spielStatus">Du bist am Zug!</p>
-    </div>
 
-    <!-- Spiel 4: Zahlenraten -->
-    <div id="spiel4" class="spielbereich">
-        <h2>Zahlenraten</h2>
-        <p>Rate die Zahl zwischen 1 und 100!</p>
-        <input type="number" id="zahlenInput" placeholder="Deine Zahl">
-        <button onclick="rateZahl()">Raten</button>
-        <p id="zahlenFeedback"></p>
-        <script>
-            const zufallsZahl = Math.floor(Math.random() * 100) + 1;
-            function rateZahl() {
-                const eingabe = parseInt(document.getElementById("zahlenInput").value);
-                const feedback = document.getElementById("zahlenFeedback");
-                if (eingabe === zufallsZahl) {
-                    feedback.textContent = "Richtig! Du hast die Zahl erraten!";
-                } else if (eingabe < zufallsZahl) {
-                    feedback.textContent = "Zu niedrig! Versuch es nochmal.";
-                } else {
-                    feedback.textContent = "Zu hoch! Versuch es nochmal.";
-                }
-            }
-        </script>
-    </div>
+        <!-- Zahlenratespiel -->
+        <div class="game">
+            <h2>Zahlenratespiel</h2>
+            <p>Errate eine Zahl zwischen 1 und 10!</p>
+            <input type="number" class="input-box" id="guessInput" min="1" max="10" placeholder="Deine Zahl">
+            <button class="btn" id="guessButton">Raten</button>
+            <p id="guessResult"></p>
+        </div>
 
-    <!-- Spiel 5: Reaktionsspiel -->
-    <div id="spiel5" class="spielbereich">
-        <h2>Reaktionsspiel</h2>
-        <p>Drücke den Button so schnell wie möglich, wenn er grün wird!</p>
-        <button id="reaktionsKnopf" disabled>Warte...</button>
-        <p id="reaktionsZeit">Reaktionszeit: --- ms</p>
-        <script>
-            let startZeit;
-            const reaktionsKnopf = document.getElementById("reaktionsKnopf");
-            const reaktionsZeit = document.getElementById("reaktionsZeit");
+        <!-- Tipp-Spiel -->
+        <div class="game">
+            <h2>Tipp-Spiel</h2>
+            <p>Wie schnell kannst du diesen Text abtippen?</p>
+            <p id="typingText">Der schnelle braune Fuchs springt über den faulen Hund.</p>
+            <input type="text" class="input-box" id="typingInput" placeholder="Tipp hier...">
+            <p id="typingResult"></p>
+        </div>
 
-            function starteReaktionstest() {
-                reaktionsKnopf.disabled = true;
-                reaktionsKnopf.textContent = "Warte...";
-                const zufälligeZeit = Math.random() * 3000 + 2000;
-                setTimeout(() => {
-                    startZeit = Date.now();
-                    reaktionsKnopf.disabled = false;
-                    reaktionsKnopf.textContent = "Klick!";
-                }, zufälligeZeit);
-            }
-
-            reaktionsKnopf.addEventListener("click", () => {
-                const dauer = Date.now() - startZeit;
-                reaktionsZeit.textContent = `Reaktionszeit: ${dauer} ms`;
-                starteReaktionstest();
-            });
-
-            starteReaktionstest();
-        </script>
-    </div>
-
-    <!-- Spiel 6: Memory -->
-    <div id="spiel6" class="spielbereich">
-        <h2>Memory</h2>
-        <p>Spiele Memory und finde die passenden Paare!</p>
-        <!-- Inhalt und Logik für Memory-Spiel -->
-    </div>
-
-    <!-- Spiel 7: Farbrätsel -->
-    <div id="spiel7" class="spielbereich">
-        <h2>Farbrätsel</h2>
-        <p>Klicke auf die richtige Farbe!</p>
-        <!-- Inhalt und Logik für Farbrätsel -->
+        <!-- Schnelles Tippen -->
+        <div class="game">
+            <h2>Schnelles Tippen</h2>
+            <p>Klicke so oft wie möglich innerhalb von 5 Sekunden!</p>
+            <button class="btn" id="fastClickButton">Starte Schnellklicken!</button>
+            <p id="fastClickScore">Punkte: 0</p>
+            <p id="fastClickTimer"></p>
+        </div>
     </div>
 
     <script>
-        // Funktion, um Spiele umzuschalten
-        function zeigeSpiel(spielId) {
-            document.querySelectorAll('.spielbereich').forEach(spiel => spiel.classList.remove('aktiv'));
-            document.getElementById(spielId).classList.add('aktiv');
-        }
+        // Besucherzähler
+        const visitorCounter = document.getElementById("visitorCounter");
+        let visits = localStorage.getItem("visits") || 0;
+        visits++;
+        localStorage.setItem("visits", visits);
+        visitorCounter.textContent = visits;
+
+        // Klick-Spiel
+        const clickButton = document.getElementById("clickButton");
+        const clickScore = document.getElementById("clickScore");
+        let score = 0;
+        clickButton.addEventListener("click", () => {
+            score++;
+            clickScore.textContent = score;
+        });
+
+        // Zahlenratespiel
+        const guessButton = document.getElementById("guessButton");
+        const guessInput = document.getElementById("guessInput");
+        const guessResult = document.getElementById("guessResult");
+        let randomNumber = Math.floor(Math.random() * 10) + 1;
+
+        guessButton.addEventListener("click", () => {
+            const userGuess = parseInt(guessInput.value);
+            if (userGuess === randomNumber) {
+                guessResult.textContent = "Richtig! 🎉 Versuche eine neue Zahl!";
+                randomNumber = Math.floor(Math.random() * 10) + 1;
+            } else {
+                guessResult.textContent = `Falsch! Versuche es erneut!`;
+            }
+        });
+
+        // Tipp-Spiel
+        const typingText = document.getElementById("typingText").innerText;
+        const typingInput = document.getElementById("typingInput");
+        const typingResult = document.getElementById("typingResult");
+        let startTime;
+
+        typingInput.addEventListener("input", () => {
+            if (!startTime) startTime = new Date();
+            if (typingInput.value === typingText) {
+                const endTime = new Date();
+                const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+                typingResult.textContent = `Fertig! Du hast ${timeTaken} Sekunden gebraucht!`;
+                startTime = null;
+                typingInput.value = "";
+            }
+        });
+
+        // Schnelles Tippen
+        const fastClickButton = document.getElementById("fastClickButton");
+        const fastClickScore = document.getElementById("fastClickScore");
+        const fastClickTimer = document.getElementById("fastClickTimer");
+        let fastClicks = 0;
+        let fastGameActive = false;
+
+        fastClickButton.addEventListener("click", () => {
+            if (!fastGameActive) {
+                fastClicks = 0;
+                fastClickScore.textContent = "Punkte: 0";
+                fastGameActive = true;
+                fastClickButton.textContent = "Klicken!";
+                let timeLeft = 5;
+                fastClickTimer.textContent = `Zeit: ${timeLeft}s`;
+                const interval = setInterval(() => {
+                    timeLeft--;
+                    fastClickTimer.textContent = `Zeit: ${timeLeft}s`;
+                    if (timeLeft === 0) {
+                        clearInterval(interval);
+                        fastGameActive = false;
+                        fastClickTimer.textContent = "Zeit abgelaufen!";
+                        fastClickButton.textContent = "Starte Schnellklicken!";
+                    }
+                }, 1000);
+            } else {
+                fastClicks++;
+                fastClickScore.textContent = `Punkte: ${fastClicks}`;
+            }
+        });
     </script>
 </body>
 </html>
