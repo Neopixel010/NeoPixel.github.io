@@ -3,42 +3,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spiel mit Geheimem Login</title>
+  <title>Spiel mit Geheimem Admin-Bereich</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       text-align: center;
       margin: 20px;
+      background: #f3f4f6;
+      color: #333;
     }
-    #game, #secret-login, #admin-menu {
-      margin-top: 30px;
+    h1, h2 {
+      color: #2c3e50;
     }
-    #secret-login, #admin-menu {
-      display: none;
+    button {
+      padding: 10px 15px;
+      margin: 10px;
+      border: none;
+      background: #3498db;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #2980b9;
     }
     input {
       padding: 10px;
       margin: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
     }
-    button {
-      padding: 10px 15px;
-      margin: 5px;
-      cursor: pointer;
+    #game, #secret-login, #admin-menu {
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
-    .hidden {
+    #secret-login, #admin-menu {
       display: none;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin: 10px 0;
+    }
+    .admin-function {
+      text-align: left;
     }
   </style>
 </head>
 <body>
-  <h1>Willkommen zu unserem kleinen Spiel</h1>
-  <p>Errate die Zahl zwischen 1 und 10!</p>
+  <h1>Willkommen in unserer Spielewelt</h1>
+  <p>Hier kannst du Spaß haben und mit etwas Glück den geheimen Admin-Bereich entdecken!</p>
 
   <!-- Spielbereich -->
   <div id="game">
+    <h2>Spiel: Rate die Zahl</h2>
+    <p>Errate die Zahl zwischen 1 und 10!</p>
     <input type="number" id="guess" placeholder="Dein Tipp" min="1" max="10">
     <button onclick="checkGuess()">Prüfen</button>
     <p id="result"></p>
+    <hr>
+    <h2>Spiel: Münzwurf</h2>
+    <p>Rate, ob Kopf oder Zahl kommt:</p>
+    <button onclick="coinFlip('Kopf')">Kopf</button>
+    <button onclick="coinFlip('Zahl')">Zahl</button>
+    <p id="coin-result"></p>
+    <hr>
+    <h2>Spiel: Würfeln</h2>
+    <p>Klicke, um einen Würfel zu werfen!</p>
+    <button onclick="rollDice()">Würfeln</button>
+    <p id="dice-result"></p>
   </div>
 
   <!-- Geheimer Login -->
@@ -55,13 +96,21 @@
   <!-- Admin-Menü -->
   <div id="admin-menu">
     <h2>Admin-Menü</h2>
-    <p>Willkommen, Admin! Hier sind deine exklusiven Optionen:</p>
+    <p>Willkommen, Admin! Hier sind deine exklusiven Funktionen:</p>
     <ul>
-      <li><button onclick="viewLogs()">Logs anzeigen</button></li>
-      <li><button onclick="manageUsers()">Benutzer verwalten</button></li>
-      <li><button onclick="settings()">Einstellungen</button></li>
+      <li><button class="admin-function" onclick="viewLogs()">📜 Logs anzeigen</button></li>
+      <li><button class="admin-function" onclick="manageUsers()">👥 Benutzer verwalten</button></li>
+      <li><button class="admin-function" onclick="settings()">⚙️ Einstellungen ändern</button></li>
+      <li><button class="admin-function" onclick="serverStatus()">📊 Serverstatus prüfen</button></li>
+      <li><button class="admin-function" onclick="createBackup()">💾 Backup erstellen</button></li>
+      <li><button class="admin-function" onclick="sendNotification()">📢 Benachrichtigungen senden</button></li>
+      <li><button class="admin-function" onclick="analyzeData()">📈 Daten analysieren</button></li>
+      <li><button class="admin-function" onclick="clearCache()">🧹 Cache leeren</button></li>
+      <li><button class="admin-function" onclick="updateSystem()">🔄 System aktualisieren</button></li>
+      <li><button class="admin-function" onclick="deleteLogs()">🗑️ Logs löschen</button></li>
+      <li><button class="admin-function" onclick="banUser()">🚫 Benutzer sperren</button></li>
     </ul>
-    <button onclick="logout()">Logout</button>
+    <button onclick="logout()">🔒 Logout</button>
   </div>
 
   <script>
@@ -81,6 +130,23 @@
       }
     }
 
+    function coinFlip(choice) {
+      const result = document.getElementById('coin-result');
+      const coin = Math.random() < 0.5 ? 'Kopf' : 'Zahl';
+      
+      if (choice === coin) {
+        result.textContent = `🎉 Du hast richtig getippt! Es ist ${coin}.`;
+      } else {
+        result.textContent = `❌ Leider falsch. Es ist ${coin}.`;
+      }
+    }
+
+    function rollDice() {
+      const diceResult = document.getElementById('dice-result');
+      const dice = Math.floor(Math.random() * 6) + 1;
+      diceResult.textContent = `🎲 Du hast eine ${dice} geworfen!`;
+    }
+
     // Geheimer Login anzeigen mit Tastenkombination
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.key === 'l') { // Ctrl + L
@@ -95,12 +161,10 @@
       const password = document.getElementById('password').value;
       const loginResult = document.getElementById('login-result');
       
-      // Einfacher Login-Check (nur zu Demo-Zwecken)
       if (username === 'admin' && password === 'geheim') {
         loginResult.textContent = '✅ Login erfolgreich!';
         loginResult.style.color = 'green';
 
-        // Geheimer Login-Bereich ausblenden und Admin-Menü anzeigen
         document.getElementById('secret-login').style.display = 'none';
         document.getElementById('admin-menu').style.display = 'block';
       } else {
@@ -109,17 +173,18 @@
       }
     }
 
-    function viewLogs() {
-      alert('📜 Logs anzeigen: Hier wären alle Admin-Logs sichtbar.');
-    }
-
-    function manageUsers() {
-      alert('👥 Benutzer verwalten: Benutzeroptionen sind verfügbar.');
-    }
-
-    function settings() {
-      alert('⚙️ Einstellungen: Admin-Einstellungen anpassen.');
-    }
+    // Admin-Funktionen
+    function viewLogs() { alert('📜 Logs werden angezeigt.'); }
+    function manageUsers() { alert('👥 Benutzer werden verwaltet.'); }
+    function settings() { alert('⚙️ Einstellungen werden geändert.'); }
+    function serverStatus() { alert('📊 Serverstatus geprüft.'); }
+    function createBackup() { alert('💾 Backup wurde erstellt.'); }
+    function sendNotification() { alert('📢 Benachrichtigungen wurden gesendet.'); }
+    function analyzeData() { alert('📈 Datenanalyse abgeschlossen.'); }
+    function clearCache() { alert('🧹 Cache wurde geleert.'); }
+    function updateSystem() { alert('🔄 System aktualisiert.'); }
+    function deleteLogs() { alert('🗑️ Logs gelöscht.'); }
+    function banUser() { alert('🚫 Benutzer gesperrt.'); }
 
     function logout() {
       alert('🔒 Du wurdest ausgeloggt!');
