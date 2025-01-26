@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin-Dashboard</title>
+    <title>Admin-Dashboard mit Benutzerverwaltung</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,23 +34,13 @@
             background-color: #666;
             border-radius: 5px;
         }
-        #login-container, #admin-tools, #editor-container, #stats-container, #user-management {
+        #login-container, #user-management, #editor-container, #stats-container {
             margin: 20px auto;
             padding: 20px;
-            max-width: 600px;
+            max-width: 800px;
             background: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
-        }
-        textarea {
-            width: 100%;
-            height: 150px;
-            margin-top: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 14px;
         }
         table {
             width: 100%;
@@ -79,9 +69,6 @@
         button:hover {
             background-color: #555;
         }
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -89,9 +76,7 @@
         <h1>Admin-Dashboard</h1>
     </header>
     <nav>
-        <a href="#editor">HTML/CSS/JS-Editor</a>
         <a href="#users">Benutzerverwaltung</a>
-        <a href="#stats">Statistiken</a>
         <a href="#logout" id="logout-button">Abmelden</a>
     </nav>
 
@@ -108,94 +93,106 @@
         <p id="login-message" class="hidden"></p>
     </div>
 
-    <!-- Admin-Tools -->
-    <div id="admin-tools" class="hidden">
-        <!-- HTML/CSS/JS-Editor -->
-        <div id="editor-container">
-            <h2>HTML/CSS/JS-Editor</h2>
-            <textarea id="html-editor">
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <title>Bearbeite mich!</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-    </style>
-</head>
-<body>
-    <h1>Willkommen im Editor!</h1>
-</body>
-</html>
-            </textarea>
-            <button id="apply-html-button">HTML anwenden</button>
-        </div>
+    <!-- Benutzerverwaltung -->
+    <div id="user-management" class="hidden">
+        <h2>Benutzerverwaltung</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Benutzername</th>
+                    <th>Rolle</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody id="user-table">
+                <!-- Benutzer werden hier dynamisch hinzugefügt -->
+            </tbody>
+        </table>
 
-        <!-- Benutzerverwaltung -->
-        <div id="user-management">
-            <h2>Benutzerverwaltung</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Benutzername</th>
-                        <th>Rolle</th>
-                        <th>Aktionen</th>
-                    </tr>
-                </thead>
-                <tbody id="user-table">
-                    <tr>
-                        <td>Admin</td>
-                        <td>Administrator</td>
-                        <td><button class="remove-user-button">Entfernen</button></td>
-                    </tr>
-                </tbody>
-            </table>
-            <h3>Neuen Benutzer hinzufügen:</h3>
-            <form id="add-user-form">
-                <input type="text" id="new-username" placeholder="Benutzername" required>
-                <select id="new-role">
-                    <option value="User">Benutzer</option>
-                    <option value="Admin">Administrator</option>
-                </select>
-                <button type="submit">Hinzufügen</button>
-            </form>
-        </div>
-
-        <!-- Statistiken -->
-        <div id="stats-container">
-            <h2>Statistiken</h2>
-            <p>Besucher: <span id="visitor-count">0</span></p>
-            <p>Letzte Änderung: <span id="last-edit">Noch keine Änderungen</span></p>
-        </div>
+        <h3>Neuen Benutzer hinzufügen:</h3>
+        <form id="add-user-form">
+            <label for="new-username">Benutzername:</label>
+            <input type="text" id="new-username" required>
+            <label for="new-role">Rolle:</label>
+            <select id="new-role">
+                <option value="Benutzer">Benutzer</option>
+                <option value="Admin">Administrator</option>
+                <option value="Gast">Gast</option>
+            </select>
+            <button type="submit">Hinzufügen</button>
+        </form>
     </div>
 
     <script>
+        // Login-System
         const loginForm = document.getElementById('login-form');
         const loginMessage = document.getElementById('login-message');
-        const adminTools = document.getElementById('admin-tools');
+        const userManagement = document.getElementById('user-management');
         const logoutButton = document.getElementById('logout-button');
-        const visitorCount = document.getElementById('visitor-count');
-        const lastEdit = document.getElementById('last-edit');
-        const htmlEditor = document.getElementById('html-editor');
-        const applyHtmlButton = document.getElementById('apply-html-button');
+
+        // Benutzerverwaltung
         const userTable = document.getElementById('user-table');
         const addUserForm = document.getElementById('add-user-form');
+        const newUsernameInput = document.getElementById('new-username');
+        const newRoleSelect = document.getElementById('new-role');
 
-        // Besucherzähler
-        let visitors = localStorage.getItem('visitors') || 0;
-        visitors++;
-        localStorage.setItem('visitors', visitors);
-        visitorCount.textContent = visitors;
+        // Lokale Benutzerliste (zur Vereinfachung; in echten Anwendungen sollte das serverseitig geschehen)
+        const users = [
+            { username: 'Admin', role: 'Administrator', password: '1234' },
+            { username: 'TestUser', role: 'Benutzer', password: 'test' }
+        ];
+
+        // Benutzer in der Tabelle anzeigen
+        function renderUsers() {
+            userTable.innerHTML = ''; // Leeren der Tabelle
+            users.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.role}</td>
+                    <td>
+                        <button class="remove-user-button" data-index="${index}">Entfernen</button>
+                    </td>
+                `;
+                userTable.appendChild(row);
+            });
+        }
+
+        // Benutzer hinzufügen
+        addUserForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newUser = {
+                username: newUsernameInput.value,
+                role: newRoleSelect.value,
+                password: 'default' // Standardpasswort
+            };
+            users.push(newUser);
+            renderUsers();
+            newUsernameInput.value = ''; // Eingabefeld leeren
+        });
+
+        // Benutzer entfernen
+        userTable.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-user-button')) {
+                const index = e.target.dataset.index;
+                users.splice(index, 1);
+                renderUsers();
+            }
+        });
 
         // Login
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            if (username === 'Admin' && password === '1234') {
+            const user = users.find((u) => u.username === username && u.password === password);
+
+            if (user) {
                 loginMessage.classList.add('hidden');
                 loginForm.style.display = 'none';
-                adminTools.classList.remove('hidden');
+                userManagement.classList.remove('hidden');
+                renderUsers();
             } else {
                 loginMessage.textContent = 'Falsche Login-Daten!';
                 loginMessage.style.color = 'red';
@@ -204,42 +201,12 @@
         });
 
         // Logout
-        logoutButton.addEventListener('click', function() {
-            location.reload();
+        logoutButton.addEventListener('click', () => {
+            location.reload(); // Seite neu laden, um den Zustand zurückzusetzen
         });
 
-        // HTML-Editor
-        applyHtmlButton.addEventListener('click', function() {
-            const newHtml = htmlEditor.value;
-            const newWindow = window.open("", "_blank");
-            newWindow.document.open();
-            newWindow.document.write(newHtml);
-            newWindow.document.close();
-            lastEdit.textContent = new Date().toLocaleString();
-        });
-
-        // Benutzerverwaltung
-        addUserForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('new-username').value;
-            const role = document.getElementById('new-role').value;
-
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>${username}</td>
-                <td>${role}</td>
-                <td><button class="remove-user-button">Entfernen</button></td>
-            `;
-            userTable.appendChild(newRow);
-
-            document.getElementById('new-username').value = '';
-        });
-
-        userTable.addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-user-button')) {
-                e.target.parentElement.parentElement.remove();
-            }
-        });
+        // Initiale Benutzeranzeige
+        renderUsers();
     </script>
 </body>
 </html>
