@@ -1,248 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login System mit Spielen</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        #app, #adminDashboard, #memberArea, .game {
-            max-width: 400px;
-            margin: 0 auto;
-            text-align: center;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        input, select, button {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        #error {
-            color: red;
-            display: none;
-        }
-
-        .game {
-            display: none;
-        }
-
-        #gameList {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        #gameList li {
-            margin: 5px 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spiel mit Geheimem Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    #game {
+      margin-top: 30px;
+    }
+    #secret-login {
+      display: none;
+      margin-top: 30px;
+    }
+    input {
+      padding: 10px;
+      margin: 5px;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <div id="app">
-        <h1>Login</h1>
-        <form id="loginForm">
-            <label for="username">Username:</label>
-            <input type="text" id="username" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" required>
-            <button type="submit">Login</button>
-        </form>
-        <p id="error">Invalid login! Try again.</p>
-    </div>
+  <h1>Willkommen zu unserem kleinen Spiel</h1>
+  <p>Errate die Zahl zwischen 1 und 10!</p>
 
-    <div id="adminDashboard" style="display: none;">
-        <h1>Admin Dashboard</h1>
-        <button id="logout">Logout</button>
-        <h2>All Accounts</h2>
-        <ul id="userList"></ul>
-        <h3>Create New Account</h3>
-        <form id="createAccountForm">
-            <input type="text" id="newUsername" placeholder="Username" required>
-            <input type="password" id="newPassword" placeholder="Password" required>
-            <select id="role">
-                <option value="member">Member</option>
-                <option value="admin">Admin</option>
-            </select>
-            <button type="submit">Create Account</button>
-        </form>
-    </div>
+  <div id="game">
+    <input type="number" id="guess" placeholder="Dein Tipp" min="1" max="10">
+    <button onclick="checkGuess()">Prüfen</button>
+    <p id="result"></p>
+  </div>
 
-    <div id="memberArea" style="display: none;">
-        <h1>Member Area</h1>
-        <p>Wähle ein Spiel aus:</p>
-        <ul id="gameList">
-            <li><button onclick="startGame('guessNumber')">Zahlenraten</button></li>
-            <li><button onclick="startGame('ticTacToe')">Tic-Tac-Toe</button></li>
-            <li><button onclick="startGame('clickGame')">Klickspiel</button></li>
-        </ul>
-        <button id="logoutMember">Logout</button>
-    </div>
+  <div id="secret-login">
+    <h2>Geheimer Login</h2>
+    <form onsubmit="handleLogin(event)">
+      <input type="text" id="username" placeholder="Benutzername" required>
+      <input type="password" id="password" placeholder="Passwort" required>
+      <button type="submit">Einloggen</button>
+    </form>
+    <p id="login-result"></p>
+  </div>
 
-    <!-- Zahlenraten -->
-    <div id="guessNumber" class="game">
-        <h2>Zahlenraten</h2>
-        <p id="guessHint">Ich habe mir eine Zahl zwischen 1 und 100 ausgedacht. Rate sie!</p>
-        <input type="number" id="guessInput" placeholder="Dein Tipp">
-        <button onclick="checkGuess()">Raten</button>
-        <p id="guessResult"></p>
-        <button onclick="backToGames()">Zurück zu den Spielen</button>
-    </div>
+  <script>
+    // Zufallszahl für das Spiel
+    const randomNumber = Math.floor(Math.random() * 10) + 1;
 
-    <!-- Tic-Tac-Toe -->
-    <div id="ticTacToe" class="game">
-        <h2>Tic-Tac-Toe</h2>
-        <div id="board" style="display: grid; grid-template-columns: repeat(3, 50px); gap: 5px;">
-            <div class="cell" onclick="makeMove(this)" style="width: 50px; height: 50px; border: 1px solid black; display: flex; justify-content: center; align-items: center; font-size: 20px;"></div>
-            <div class="cell" onclick="makeMove(this)"></div>
-            <div class="cell" onclick="makeMove(this)"></div>
-            <div class="cell" onclick="makeMove(this)"></div>
-            <div class="cell" onclick="makeMove(this)"></div>
-            <div class="cell" onclick="makeMove(this)"></div>
-            <div class="cell" onclick="makeMove(this)"></div>
-            <div class="cell" onclick="makeMove(this)"></div>
-            <div class="cell" onclick="makeMove(this)"></div>
-        </div>
-        <p id="ticTacToeResult"></p>
-        <button onclick="resetBoard()">Neustart</button>
-        <button onclick="backToGames()">Zurück zu den Spielen</button>
-    </div>
+    function checkGuess() {
+      const userGuess = parseInt(document.getElementById('guess').value);
+      const result = document.getElementById('result');
+      
+      if (userGuess === randomNumber) {
+        result.textContent = '🎉 Glückwunsch! Du hast richtig geraten!';
+        result.style.color = 'green';
+      } else {
+        result.textContent = '❌ Falsch geraten! Versuch es nochmal.';
+        result.style.color = 'red';
+      }
+    }
 
-    <!-- Klickspiel -->
-    <div id="clickGame" class="game">
-        <h2>Klickspiel</h2>
-        <p>Klicke so oft wie möglich in 5 Sekunden!</p>
-        <button id="clickButton" onclick="countClick()">Klicken</button>
-        <p id="clickCount">Klicks: 0</p>
-        <p id="clickResult"></p>
-        <button onclick="backToGames()">Zurück zu den Spielen</button>
-    </div>
+    // Geheimer Login anzeigen mit Tastenkombination
+    document.addEventListener('keydown', (event) => {
+      if (event.ctrlKey && event.key === 'l') { // Ctrl + L
+        const secretLogin = document.getElementById('secret-login');
+        secretLogin.style.display = 'block';
+      }
+    });
 
-    <script>
-        // Dummy data for accounts
-        const accounts = [
-            { username: "admin", password: "admin123", role: "admin" },
-            { username: "member1", password: "member123", role: "member" }
-        ];
-
-        // DOM elements
-        const loginForm = document.getElementById("loginForm");
-        const error = document.getElementById("error");
-        const adminDashboard = document.getElementById("adminDashboard");
-        const memberArea = document.getElementById("memberArea");
-        const app = document.getElementById("app");
-        const userList = document.getElementById("userList");
-        const createAccountForm = document.getElementById("createAccountForm");
-        const logout = document.getElementById("logout");
-        const logoutMember = document.getElementById("logoutMember");
-
-        // Game state
-        let randomNumber = Math.floor(Math.random() * 100) + 1;
-        let clickCount = 0;
-        let timerRunning = false;
-
-        // Login logic
-        loginForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-
-            const account = accounts.find(acc => acc.username === username && acc.password === password);
-            if (account) {
-                app.style.display = "none";
-                account.role === "admin" ? adminDashboard.style.display = "block" : memberArea.style.display = "block";
-            } else {
-                error.style.display = "block";
-            }
-        });
-
-        // Admin logic
-        createAccountForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const newUsername = document.getElementById("newUsername").value;
-            const newPassword = document.getElementById("newPassword").value;
-            const role = document.getElementById("role").value;
-
-            accounts.push({ username: newUsername, password: newPassword, role });
-            alert("Benutzer erstellt!");
-        });
-
-        // Game navigation
-        function startGame(gameId) {
-            document.querySelectorAll('.game').forEach(game => game.style.display = "none");
-            document.getElementById(gameId).style.display = "block";
-        }
-
-        function backToGames() {
-            document.querySelectorAll('.game').forEach(game => game.style.display = "none");
-            memberArea.style.display = "block";
-        }
-
-        // Zahlenraten
-        function checkGuess() {
-            const guess = Number(document.getElementById("guessInput").value);
-            const result = document.getElementById("guessResult");
-            if (guess === randomNumber) {
-                result.textContent = "Richtig! Du hast die Zahl erraten.";
-            } else if (guess < randomNumber) {
-                result.textContent = "Zu niedrig! Versuch es nochmal.";
-            } else {
-                result.textContent = "Zu hoch! Versuch es nochmal.";
-            }
-        }
-
-        // Tic-Tac-Toe
-        let currentPlayer = "X";
-        function makeMove(cell) {
-            if (!cell.textContent) {
-                cell.textContent = currentPlayer;
-                currentPlayer = currentPlayer === "X" ? "O" : "X";
-            }
-        }
-
-        function resetBoard() {
-            document.querySelectorAll('.cell').forEach(cell => cell.textContent = "");
-            currentPlayer = "X";
-        }
-
-        // Klickspiel
-        function countClick() {
-            if (!timerRunning) {
-                timerRunning = true;
-                clickCount = 0;
-                document.getElementById("clickResult").textContent = "";
-                setTimeout(() => {
-                    timerRunning = false;
-                    document.getElementById("clickResult").textContent = `Zeit vorbei! Du hast ${clickCount} Klicks geschafft.`;
-                }, 5000);
-            }
-            clickCount++;
-            document.getElementById("clickCount").textContent = `Klicks: ${clickCount}`;
-        }
-
-        // Logout
-        logout.addEventListener("click", () => {
-            adminDashboard.style.display = "none";
-            app.style.display = "block";
-        });
-
-        logoutMember.addEventListener("click", () => {
-            memberArea.style.display = "none";
-            app.style.display = "block";
-        });
-    </script>
+    function handleLogin(event) {
+      event.preventDefault(); // Verhindert das Neuladen der Seite
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const loginResult = document.getElementById('login-result');
+      
+      // Einfacher Login-Check (für echte Anwendungen: niemals so machen, Backend verwenden!)
+      if (username === 'admin' && password === 'geheim') {
+        loginResult.textContent = '✅ Login erfolgreich!';
+        loginResult.style.color = 'green';
+      } else {
+        loginResult.textContent = '❌ Falsche Zugangsdaten!';
+        loginResult.style.color = 'red';
+      }
+    }
+  </script>
 </body>
 </html>
