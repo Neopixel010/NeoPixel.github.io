@@ -46,28 +46,29 @@
     #secret-login, #admin-menu {
       display: none;
     }
-    ul {
-      list-style-type: none;
-      padding: 0;
-    }
-    li {
-      margin: 10px 0;
-    }
-    .admin-function {
-      text-align: left;
-    }
-    .admin-output {
-      background: #ecf0f1;
-      padding: 10px;
-      border-radius: 5px;
-      margin-top: 20px;
+    #tap-area {
+      width: 100px;
+      height: 100px;
+      margin: 50px auto;
+      background: #bdc3c7;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       color: #2c3e50;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
     }
   </style>
 </head>
 <body>
   <h1>Willkommen in unserer Spielewelt</h1>
   <p>Hier kannst du Spaß haben und mit etwas Glück den geheimen Admin-Bereich entdecken!</p>
+
+  <!-- Tippen-Bereich -->
+  <div id="tap-area" onclick="incrementTapCount()">Drücke hier</div>
 
   <!-- Spielbereich -->
   <div id="game">
@@ -89,29 +90,23 @@
     <p id="login-result"></p>
   </div>
 
-  <!-- Admin-Menü -->
-  <div id="admin-menu">
-    <h2>Admin-Menü</h2>
-    <p>Willkommen, Admin! Hier sind deine exklusiven Funktionen:</p>
-    <ul>
-      <li><button class="admin-function" onclick="viewLogs()">📜 Logs anzeigen</button></li>
-      <li><button class="admin-function" onclick="manageUsers()">👥 Benutzer verwalten</button></li>
-      <li><button class="admin-function" onclick="settings()">⚙️ Einstellungen ändern</button></li>
-      <li><button class="admin-function" onclick="serverStatus()">📊 Serverstatus prüfen</button></li>
-      <li><button class="admin-function" onclick="createBackup()">💾 Backup erstellen</button></li>
-      <li><button class="admin-function" onclick="sendNotification()">📢 Benachrichtigungen senden</button></li>
-      <li><button class="admin-function" onclick="analyzeData()">📈 Daten analysieren</button></li>
-      <li><button class="admin-function" onclick="clearCache()">🧹 Cache leeren</button></li>
-      <li><button class="admin-function" onclick="updateSystem()">🔄 System aktualisieren</button></li>
-      <li><button class="admin-function" onclick="deleteLogs()">🗑️ Logs löschen</button></li>
-    </ul>
-    <div id="admin-output" class="admin-output">
-      <p>Hier werden Ergebnisse der Admin-Aktionen angezeigt...</p>
-    </div>
-    <button onclick="logout()">🔒 Logout</button>
-  </div>
-
   <script>
+    // Tippen-Zähler
+    let tapCount = 0;
+
+    function incrementTapCount() {
+      tapCount++;
+      const tapArea = document.getElementById('tap-area');
+      tapArea.textContent = `${tapCount} / 10`;
+
+      if (tapCount === 10) {
+        // Geheimer Login sichtbar machen
+        document.getElementById('secret-login').style.display = 'block';
+        tapArea.style.display = 'none'; // Tap-Bereich ausblenden
+        alert('🔓 Geheimer Login wurde freigeschaltet!');
+      }
+    }
+
     // Zufallszahl für das Spiel
     const randomNumber = Math.floor(Math.random() * 10) + 1;
 
@@ -128,14 +123,6 @@
       }
     }
 
-    // Geheimer Login anzeigen mit Tastenkombination
-    document.addEventListener('keydown', (event) => {
-      if (event.ctrlKey && event.key === 'l') { // Ctrl + L
-        const secretLogin = document.getElementById('secret-login');
-        secretLogin.style.display = 'block';
-      }
-    });
-
     function handleLogin(event) {
       event.preventDefault(); // Verhindert das Neuladen der Seite
       const username = document.getElementById('username').value;
@@ -145,65 +132,12 @@
       if (username === 'admin' && password === 'geheim') {
         loginResult.textContent = '✅ Login erfolgreich!';
         loginResult.style.color = 'green';
-
-        document.getElementById('secret-login').style.display = 'none';
-        document.getElementById('admin-menu').style.display = 'block';
+        alert('Willkommen im Admin-Bereich!');
+        // Weitere Logik für den Admin-Bereich könnte hier folgen
       } else {
         loginResult.textContent = '❌ Falsche Zugangsdaten!';
         loginResult.style.color = 'red';
       }
-    }
-
-    // Admin-Funktionen mit Ausgabe
-    function setAdminOutput(message) {
-      const adminOutput = document.getElementById('admin-output');
-      adminOutput.innerHTML = `<p>${message}</p>`;
-    }
-
-    function viewLogs() {
-      setAdminOutput('📜 Logs: Keine Fehler gefunden.');
-    }
-
-    function manageUsers() {
-      setAdminOutput('👥 Benutzerverwaltung: 10 aktive Benutzer.');
-    }
-
-    function settings() {
-      setAdminOutput('⚙️ Einstellungen wurden erfolgreich geändert.');
-    }
-
-    function serverStatus() {
-      setAdminOutput('📊 Serverstatus: Alles läuft einwandfrei.');
-    }
-
-    function createBackup() {
-      setAdminOutput('💾 Backup wurde erfolgreich erstellt.');
-    }
-
-    function sendNotification() {
-      setAdminOutput('📢 Benachrichtigung an alle Benutzer gesendet.');
-    }
-
-    function analyzeData() {
-      setAdminOutput('📈 Datenanalyse abgeschlossen. 95% der Benutzer sind aktiv.');
-    }
-
-    function clearCache() {
-      setAdminOutput('🧹 Cache wurde erfolgreich geleert.');
-    }
-
-    function updateSystem() {
-      setAdminOutput('🔄 System wurde erfolgreich aktualisiert.');
-    }
-
-    function deleteLogs() {
-      setAdminOutput('🗑️ Logs wurden erfolgreich gelöscht.');
-    }
-
-    function logout() {
-      alert('🔒 Du wurdest ausgeloggt!');
-      document.getElementById('admin-menu').style.display = 'none';
-      document.getElementById('secret-login').style.display = 'none';
     }
   </script>
 </body>
