@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin-Dashboard mit E-Mail-Funktion</title>
+    <title>Admin-Dashboard mit E-Mail und Berechtigungen</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -69,23 +69,24 @@
         button:hover {
             background-color: #555;
         }
-        input[type="email"], input[type="text"], select {
+        input[type="email"], input[type="text"], input[type="password"], select {
             padding: 8px;
             width: 100%;
             margin: 8px 0;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>Admin-Dashboard mit E-Mail</h1>
+        <h1>Admin-Dashboard mit Berechtigungen</h1>
     </header>
     <nav>
-        <a href="#users">Benutzerverwaltung</a>
-        <a href="#password-change">Passwort ändern</a>
-        <a href="#logout" id="logout-button">Abmelden</a>
+        <a href="#logout" id="logout-button" class="hidden">Abmelden</a>
     </nav>
 
     <!-- Login -->
@@ -101,7 +102,7 @@
         <p id="login-message" class="hidden"></p>
     </div>
 
-    <!-- Benutzerverwaltung -->
+    <!-- Benutzerverwaltung (Nur für Admins sichtbar) -->
     <div id="user-management" class="hidden">
         <h2>Benutzerverwaltung</h2>
         <table>
@@ -149,12 +150,20 @@
     </div>
 
     <script>
+        // Benutzerliste
+        const users = [
+            { username: 'Admin', email: 'admin@example.com', role: 'Administrator', password: '1234', status: 'aktiv' },
+            { username: 'TestUser', email: 'user@example.com', role: 'Benutzer', password: 'test', status: 'aktiv' }
+        ];
+
+        let currentUser = null;
+
+        // Elemente
         const loginForm = document.getElementById('login-form');
         const loginMessage = document.getElementById('login-message');
         const userManagement = document.getElementById('user-management');
         const passwordChangeContainer = document.getElementById('password-change-container');
         const logoutButton = document.getElementById('logout-button');
-
         const userTable = document.getElementById('user-table');
         const addUserForm = document.getElementById('add-user-form');
         const newUsernameInput = document.getElementById('new-username');
@@ -164,13 +173,7 @@
         const passwordChangeForm = document.getElementById('password-change-form');
         const passwordChangeMessage = document.getElementById('password-change-message');
 
-        const users = [
-            { username: 'Admin', email: 'admin@example.com', role: 'Administrator', password: '1234', status: 'aktiv' },
-            { username: 'TestUser', email: 'user@example.com', role: 'Benutzer', password: 'test', status: 'aktiv' }
-        ];
-
-        let currentUser = null;
-
+        // Benutzerliste anzeigen
         function renderUsers() {
             userTable.innerHTML = '';
             users.forEach((user, index) => {
@@ -182,7 +185,6 @@
                     <td>${user.status}</td>
                     <td>
                         ${currentUser.role === 'Administrator' ? `
-                            <button class="edit-user-button" data-index="${index}">Bearbeiten</button>
                             <button class="block-user-button" data-index="${index}">${user.status === 'aktiv' ? 'Sperren' : 'Entsperren'}</button>
                             <button class="remove-user-button" data-index="${index}">Löschen</button>
                         ` : ''}
@@ -192,10 +194,11 @@
             });
         }
 
+        // Benutzer hinzufügen
         addUserForm.addEventListener('submit', (e) => {
             e.preventDefault();
             if (newRoleSelect.value === 'Administrator' && currentUser.role !== 'Administrator') {
-                alert('Nur Administratoren können andere Admin-Konten erstellen.');
+                alert('Nur Administratoren können Admin-Konten erstellen.');
                 return;
             }
             users.push({
@@ -210,6 +213,7 @@
             newEmailInput.value = '';
         });
 
+        // Benutzerverwaltung-Events
         userTable.addEventListener('click', (e) => {
             const index = e.target.dataset.index;
             if (e.target.classList.contains('remove-user-button')) {
@@ -221,6 +225,7 @@
             }
         });
 
+        // Passwort ändern
         passwordChangeForm.addEventListener('submit', (e) => {
             e.preventDefault();
             if (passwordChangeForm['current-password'].value === currentUser.password) {
@@ -235,6 +240,7 @@
             }
         });
 
+        // Login
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const username = loginForm['username'].value;
@@ -242,10 +248,10 @@
             const user = users.find(u => u.username === username && u.password === password && u.status === 'aktiv');
             if (user) {
                 currentUser = user;
-                loginMessage.classList.add('hidden');
                 loginForm.style.display = 'none';
-                if (user.role === 'Administrator') userManagement.classList.remove('hidden');
+                logoutButton.classList.remove('hidden');
                 passwordChangeContainer.classList.remove('hidden');
+                if (user.role === 'Administrator') userManagement.classList.remove('hidden');
                 renderUsers();
             } else {
                 loginMessage.textContent = 'Falsche Login-Daten oder Konto gesperrt!';
@@ -254,6 +260,7 @@
             }
         });
 
+        // Logout
         logoutButton.addEventListener('click', () => location.reload());
     </script>
 </body>
