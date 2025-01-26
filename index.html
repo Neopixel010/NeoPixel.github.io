@@ -142,6 +142,8 @@
             { username: 'TestUser', role: 'Benutzer', password: 'test' }
         ];
 
+        let currentUser = null;
+
         // Benutzer in der Tabelle anzeigen
         function renderUsers() {
             userTable.innerHTML = ''; // Leeren der Tabelle
@@ -189,10 +191,16 @@
             const user = users.find((u) => u.username === username && u.password === password);
 
             if (user) {
+                currentUser = user;
                 loginMessage.classList.add('hidden');
                 loginForm.style.display = 'none';
-                userManagement.classList.remove('hidden');
-                renderUsers();
+
+                if (user.role === 'Administrator') {
+                    userManagement.classList.remove('hidden');
+                    renderUsers();
+                } else {
+                    alert('Willkommen, ' + user.username + '! Sie haben eingeschränkte Rechte.');
+                }
             } else {
                 loginMessage.textContent = 'Falsche Login-Daten!';
                 loginMessage.style.color = 'red';
@@ -204,9 +212,6 @@
         logoutButton.addEventListener('click', () => {
             location.reload(); // Seite neu laden, um den Zustand zurückzusetzen
         });
-
-        // Initiale Benutzeranzeige
-        renderUsers();
     </script>
 </body>
 </html>
