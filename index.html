@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spielewelt mit Admin-Bereich</title>
   <style>
+    /* Allgemeines Styling */
     body {
       font-family: 'Arial', sans-serif;
-      text-align: center;
-      margin: 20px;
+      margin: 0;
+      padding: 0;
       background: #f3f4f6;
       color: #333;
     }
@@ -16,7 +17,7 @@
       color: #2c3e50;
     }
     button {
-      padding: 10px 15px;
+      padding: 10px 20px;
       margin: 10px;
       border: none;
       background: #3498db;
@@ -36,226 +37,148 @@
       border-radius: 5px;
       font-size: 16px;
     }
-    #game, #secret-login, #admin-menu {
-      margin-top: 30px;
-      padding: 20px;
-      border-radius: 10px;
-      background: #ffffff;
+
+    /* Menü Styling */
+    nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      background: #34495e;
+      color: white;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
-    #secret-login, #admin-menu {
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    nav a:hover {
+      background: #2c3e50;
+    }
+
+    /* Hauptbereich */
+    .container {
+      padding: 20px;
+    }
+
+    /* Spiel- und Admin-Bereich */
+    .section {
       display: none;
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
-    .game-container {
-      margin-bottom: 20px;
+    .active {
+      display: block;
     }
-    p {
-      margin: 10px 0;
+
+    /* Geheimer Bereich */
+    #tap-area {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background: transparent;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h1>Willkommen in der Spielewelt</h1>
+  <!-- Navigationsmenü -->
+  <nav>
+    <a href="#" onclick="showSection('game')">🎮 Spiele</a>
+    <a href="#" onclick="showSection('admin-menu')">🔒 Admin-Bereich</a>
+  </nav>
 
-  <div id="game">
-    <!-- 1. Spiel: Rate die Zahl -->
-    <div class="game-container">
-      <h2>Spiel 1: Rate die Zahl</h2>
-      <p>Errate die Zahl zwischen 1 und 10!</p>
-      <input type="number" id="guess" placeholder="Dein Tipp" min="1" max="10">
-      <button onclick="checkGuess()">Prüfen</button>
-      <p id="result"></p>
+  <!-- Unsichtbarer Bereich für geheimen Login -->
+  <div id="tap-area" onclick="incrementTapCount()"></div>
+
+  <div class="container">
+    <!-- Spielebereich -->
+    <div id="game" class="section active">
+      <h1>Spielewelt</h1>
+
+      <!-- Spiel: Rate die Zahl -->
+      <div>
+        <h2>Spiel: Rate die Zahl</h2>
+        <p>Errate die Zahl zwischen 1 und 10!</p>
+        <input type="number" id="guess" placeholder="Dein Tipp" min="1" max="10">
+        <button onclick="checkGuess()">Prüfen</button>
+        <p id="result"></p>
+      </div>
+
+      <hr>
+      <!-- Weitere Spiele -->
+      <h2>Weitere Spiele</h2>
+      <p>Spiele wie Addieren, Würfeln, Münzwurf usw. kommen hier hin!</p>
     </div>
 
-    <!-- 2. Spiel: Zahlen-Addieren -->
-    <div class="game-container">
-      <h2>Spiel 2: Zahlen-Addieren</h2>
-      <p id="addition-task"></p>
-      <input type="number" id="addition-answer" placeholder="Deine Antwort">
-      <button onclick="checkAddition()">Antwort prüfen</button>
-      <p id="addition-result"></p>
-    </div>
-
-    <!-- 3. Spiel: Farbraten -->
-    <div class="game-container">
-      <h2>Spiel 3: Farbraten</h2>
-      <p>Errate, welche Farbe ausgewählt wurde!</p>
-      <button onclick="checkColor('rot')">Rot</button>
-      <button onclick="checkColor('blau')">Blau</button>
-      <button onclick="checkColor('grün')">Grün</button>
-      <p id="color-result"></p>
-    </div>
-
-    <!-- 4. Spiel: Münzwurf -->
-    <div class="game-container">
-      <h2>Spiel 4: Münzwurf</h2>
-      <p>Rate, ob Kopf oder Zahl kommt:</p>
-      <button onclick="coinFlip('Kopf')">Kopf</button>
-      <button onclick="coinFlip('Zahl')">Zahl</button>
-      <p id="coin-result"></p>
-    </div>
-
-    <!-- 5. Spiel: Würfeln -->
-    <div class="game-container">
-      <h2>Spiel 5: Würfeln</h2>
-      <p>Würfle und sieh, was du bekommst!</p>
-      <button onclick="rollDice()">Würfeln</button>
-      <p id="dice-result"></p>
-    </div>
-
-    <!-- 6. Spiel: Wort-Raten -->
-    <div class="game-container">
-      <h2>Spiel 6: Wort-Raten</h2>
-      <p>Gib ein Wort ein und prüfe, ob es das gesuchte ist!</p>
-      <input type="text" id="word-guess" placeholder="Dein Wort">
-      <button onclick="checkWord()">Prüfen</button>
-      <p id="word-result"></p>
-    </div>
-
-    <!-- 7. Spiel: Schnellklicker -->
-    <div class="game-container">
-      <h2>Spiel 7: Schnellklicker</h2>
-      <p>Klicke so oft wie möglich in 5 Sekunden!</p>
-      <button onclick="startClickerGame()">Start</button>
-      <p id="click-result"></p>
-    </div>
-
-    <!-- 8. Spiel: Zahlen-Quiz -->
-    <div class="game-container">
-      <h2>Spiel 8: Zahlen-Quiz</h2>
-      <p>Welche Zahl kommt als Nächstes in der Reihe? 2, 4, 6, ...</p>
-      <input type="number" id="quiz-answer" placeholder="Deine Antwort">
-      <button onclick="checkQuiz()">Antwort prüfen</button>
-      <p id="quiz-result"></p>
-    </div>
-
-    <!-- 9. Spiel: Reaktionszeit -->
-    <div class="game-container">
-      <h2>Spiel 9: Reaktionszeit</h2>
-      <p>Klicke auf den Button, sobald er grün wird!</p>
-      <button id="reaction-button" disabled>Warten...</button>
-      <p id="reaction-result"></p>
-    </div>
-
-    <!-- 10. Spiel: Mathe-Test -->
-    <div class="game-container">
-      <h2>Spiel 10: Mathe-Test</h2>
-      <p id="math-task"></p>
-      <input type="number" id="math-answer" placeholder="Deine Antwort">
-      <button onclick="checkMath()">Antwort prüfen</button>
-      <p id="math-result"></p>
+    <!-- Admin-Menü -->
+    <div id="admin-menu" class="section">
+      <h1>Admin-Bereich</h1>
+      <p>Willkommen im Admin-Bereich! Hier kannst du wichtige Funktionen ausführen:</p>
+      <ul>
+        <li><button onclick="viewLogs()">📜 Logs anzeigen</button></li>
+        <li><button onclick="manageUsers()">👥 Benutzer verwalten</button></li>
+        <li><button onclick="settings()">⚙️ Einstellungen ändern</button></li>
+      </ul>
+      <div id="admin-output">
+        <p>Ergebnisse der Admin-Aktionen werden hier angezeigt...</p>
+      </div>
+      <button onclick="logout()">🔒 Logout</button>
     </div>
   </div>
 
   <script>
-    // Spiel 1: Rate die Zahl
+    /* Navigation */
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(section => section.classList.remove('active'));
+      document.getElementById(sectionId).classList.add('active');
+    }
+
+    /* Geheimer Login */
+    let tapCount = 0;
+    function incrementTapCount() {
+      tapCount++;
+      if (tapCount === 10) {
+        document.getElementById('admin-menu').style.display = 'block';
+        alert('🔓 Geheimer Login freigeschaltet!');
+      }
+    }
+
+    /* Spielefunktionen */
     const randomNumber = Math.floor(Math.random() * 10) + 1;
     function checkGuess() {
       const userGuess = parseInt(document.getElementById('guess').value);
-      document.getElementById('result').textContent =
+      const result = document.getElementById('result');
+      result.textContent =
         userGuess === randomNumber
-          ? '🎉 Glückwunsch! Richtig geraten.'
-          : '❌ Falsch. Versuch es nochmal.';
+          ? '🎉 Glückwunsch! Du hast richtig geraten.'
+          : '❌ Leider falsch. Versuch es nochmal.';
     }
 
-    // Spiel 2: Zahlen-Addieren
-    let num1 = Math.floor(Math.random() * 50) + 1;
-    let num2 = Math.floor(Math.random() * 50) + 1;
-    document.getElementById('addition-task').textContent = `Was ist ${num1} + ${num2}?`;
-    function checkAddition() {
-      const answer = parseInt(document.getElementById('addition-answer').value);
-      document.getElementById('addition-result').textContent =
-        answer === num1 + num2
-          ? '🎉 Richtig!'
-          : '❌ Falsch. Versuchs nochmal.';
+    /* Admin-Funktionen */
+    function viewLogs() {
+      document.getElementById('admin-output').textContent = '📜 Logs: Keine Fehler gefunden.';
     }
-
-    // Spiel 3: Farbraten
-    const colors = ['rot', 'blau', 'grün'];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    function checkColor(color) {
-      document.getElementById('color-result').textContent =
-        color === randomColor
-          ? `🎉 Richtig! Die Farbe war ${randomColor}.`
-          : `❌ Falsch. Es war ${randomColor}.`;
+    function manageUsers() {
+      document.getElementById('admin-output').textContent = '👥 Benutzer: 12 aktive Benutzer.';
     }
-
-    // Spiel 4: Münzwurf
-    function coinFlip(choice) {
-      const result = Math.random() < 0.5 ? 'Kopf' : 'Zahl';
-      document.getElementById('coin-result').textContent =
-        choice === result
-          ? `🎉 Richtig! Es ist ${result}.`
-          : `❌ Falsch. Es war ${result}.`;
+    function settings() {
+      document.getElementById('admin-output').textContent = '⚙️ Einstellungen erfolgreich geändert.';
     }
-
-    // Spiel 5: Würfeln
-    function rollDice() {
-      const diceResult = Math.floor(Math.random() * 6) + 1;
-      document.getElementById('dice-result').textContent = `🎲 Du hast eine ${diceResult} geworfen.`;
-    }
-
-    // Spiel 6: Wort-Raten
-    const wordToGuess = 'openai';
-    function checkWord() {
-      const word = document.getElementById('word-guess').value.toLowerCase();
-      document.getElementById('word-result').textContent =
-        word === wordToGuess
-          ? '🎉 Richtig! Das Wort ist "openai".'
-          : '❌ Falsch. Versuch es nochmal.';
-    }
-
-    // Spiel 7: Schnellklicker
-    let clickCount = 0;
-    let clickerTimer;
-    function startClickerGame() {
-      clickCount = 0;
-      document.getElementById('click-result').textContent = 'Starte das Spiel...';
-      clickerTimer = setTimeout(() => {
-        document.getElementById('click-result').textContent = `Du hast ${clickCount} Klicks geschafft!`;
-      }, 5000);
-      document.body.addEventListener('click', () => clickCount++);
-    }
-
-    // Spiel 8: Zahlen-Quiz
-    function checkQuiz() {
-      const answer = parseInt(document.getElementById('quiz-answer').value);
-      document.getElementById('quiz-result').textContent =
-        answer === 8
-          ? '🎉 Richtig! Die nächste Zahl ist 8.'
-          : '❌ Falsch. Versuch es nochmal.';
-    }
-
-    // Spiel 9: Reaktionszeit
-    let reactionStart;
-    function startReactionGame() {
-      const delay = Math.random() * 3000 + 1000; // 1-4 Sekunden Verzögerung
-      setTimeout(() => {
-        document.getElementById('reaction-button').textContent = 'Jetzt!';
-        document.getElementById('reaction-button').style.background = 'green';
-        document.getElementById('reaction-button').disabled = false;
-        reactionStart = Date.now();
-      }, delay);
-    }
-    document.getElementById('reaction-button').addEventListener('click', () => {
-      const reactionTime = Date.now() - reactionStart;
-      document.getElementById('reaction-result').textContent = `Reaktionszeit: ${reactionTime} ms.`;
-      document.getElementById('reaction-button').disabled = true;
-      document.getElementById('reaction-button').textContent = 'Warten...';
-      document.getElementById('reaction-button').style.background = '';
-    });
-    startReactionGame();
-
-    // Spiel 10: Mathe-Test
-    let mathNum1 = Math.floor(Math.random() * 20) + 1;
-    let mathNum2 = Math.floor(Math.random() * 20) + 1;
-    document.getElementById('math-task').textContent = `Was ist ${mathNum1} * ${mathNum2}?`;
-    function checkMath() {
-      const answer = parseInt(document.getElementById('math-answer').value);
-      document.getElementById('math-result').textContent =
-        answer === mathNum1 * mathNum2
-          ? '🎉 Richtig!'
-          : '❌ Falsch. Versuch es nochmal.';
+    function logout() {
+      document.getElementById('admin-menu').style.display = 'none';
+      tapCount = 0; // Zurücksetzen des Zählers
+      alert('🔒 Du wurdest ausgeloggt.');
     }
   </script>
 </body>
