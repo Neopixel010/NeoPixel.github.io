@@ -3,176 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spielemenü</title>
+    <title>Meine Spiele-Seite</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
             text-align: center;
-            margin: 20px;
         }
-        #menü {
-            margin-bottom: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            margin: 5px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .spielbereich {
-            display: none;
-        }
-        .spielbereich.aktiv {
-            display: block;
-        }
-        .tic-tac-toe {
+        .game-list {
             display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-gap: 5px;
-            justify-content: center;
-            margin: 20px auto;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
         }
-        .feld {
-            width: 100px;
-            height: 100px;
-            font-size: 24px;
-            font-weight: bold;
-            background-color: #f9f9f9;
-            border: 2px solid #4CAF50;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+        .game {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
         }
-        .feld:hover {
-            background-color: #e8f5e9;
+        .game:hover {
+            transform: scale(1.05);
+        }
+        iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: 8px;
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
         }
     </style>
 </head>
 <body>
-    <h1>Spielemenü</h1>
-    <div id="menü">
-        <button onclick="zeigeSpiel('spiel1')">Klickspiel</button>
-        <button onclick="zeigeSpiel('spiel2')">Besucherzähler</button>
-        <button onclick="zeigeSpiel('spiel3')">Tic Tac Toe</button>
-        <button onclick="zeigeSpiel('spiel4')">Zahlenraten</button>
-        <button onclick="zeigeSpiel('spiel5')">Reaktionsspiel</button>
-    </div>
+    <h1>Willkommen auf meiner Spiele-Seite</h1>
+    <p>Hier kannst du 10 meiner Lieblingsspiele direkt spielen:</p>
 
-    <!-- Spiel 1: Klickspiel -->
-    <div id="spiel1" class="spielbereich">
-        <h2>Klickspiel</h2>
-        <p>Klicke auf den Button, um Punkte zu sammeln!</p>
-        <button id="klickKnopf">Klicken!</button>
-        <p>Punkte: <span id="klickPunkte">0</span></p>
-        <script>
-            let klickPunkte = 0;
-            document.getElementById("klickKnopf").addEventListener("click", () => {
-                klickPunkte++;
-                document.getElementById("klickPunkte").textContent = klickPunkte;
-            });
-        </script>
-    </div>
-
-    <!-- Spiel 2: Besucherzähler -->
-    <div id="spiel2" class="spielbereich">
-        <h2>Besucherzähler</h2>
-        <p>Du bist Besucher Nummer:</p>
-        <p id="besucherCounter">0</p>
-        <script>
-            let besucherZahl = localStorage.getItem("besucherZaehler") || 0;
-            besucherZahl++;
-            localStorage.setItem("besucherZaehler", besucherZahl);
-            document.getElementById("besucherCounter").textContent = besucherZahl;
-        </script>
-    </div>
-
-    <!-- Spiel 3: Tic Tac Toe -->
-    <div id="spiel3" class="spielbereich">
-        <h2>Tic Tac Toe</h2>
-        <div class="tic-tac-toe" id="ticTacToe">
-            <div class="feld" data-index="0"></div>
-            <div class="feld" data-index="1"></div>
-            <div class="feld" data-index="2"></div>
-            <div class="feld" data-index="3"></div>
-            <div class="feld" data-index="4"></div>
-            <div class="feld" data-index="5"></div>
-            <div class="feld" data-index="6"></div>
-            <div class="feld" data-index="7"></div>
-            <div class="feld" data-index="8"></div>
+    <div class="game-list">
+        <div class="game">
+            <h3>Minecraft Classic</h3>
+            <iframe src="https://classic.minecraft.net/" title="Minecraft"></iframe>
         </div>
-        <p id="spielStatus">Du bist am Zug!</p>
+        <div class="game">
+            <h3>Tetris</h3>
+            <iframe src="https://tetris.com/play-tetris" title="Tetris"></iframe>
+        </div>
+        <div class="game">
+            <h3>Snake</h3>
+            <iframe src="https://playsnake.org/" title="Snake"></iframe>
+        </div>
+        <div class="game">
+            <h3>Pong</h3>
+            <iframe src="https://pong-2players.com/" title="Pong"></iframe>
+        </div>
+        <div class="game">
+            <h3>Pac-Man</h3>
+            <iframe src="https://pacman.live/" title="Pac-Man"></iframe>
+        </div>
+        <div class="game">
+            <h3>2048</h3>
+            <iframe src="https://play2048.co/" title="2048"></iframe>
+        </div>
+        <div class="game">
+            <h3>Flappy Bird</h3>
+            <iframe src="https://flappybird.io/" title="Flappy Bird"></iframe>
+        </div>
+        <div class="game">
+            <h3>Sudoku</h3>
+            <iframe src="https://sudoku.com/" title="Sudoku"></iframe>
+        </div>
+        <div class="game">
+            <h3>Chess</h3>
+            <iframe src="https://www.chess.com/play/computer" title="Chess"></iframe>
+        </div>
+        <div class="game">
+            <h3>Solitaire</h3>
+            <iframe src="https://www.solitr.com/" title="Solitaire"></iframe>
+        </div>
     </div>
 
-    <!-- Spiel 4: Zahlenraten -->
-    <div id="spiel4" class="spielbereich">
-        <h2>Zahlenraten</h2>
-        <p>Rate die Zahl zwischen 1 und 100!</p>
-        <input type="number" id="zahlenInput" placeholder="Deine Zahl">
-        <button onclick="rateZahl()">Raten</button>
-        <p id="zahlenFeedback"></p>
-        <script>
-            const zufallsZahl = Math.floor(Math.random() * 100) + 1;
-            function rateZahl() {
-                const eingabe = parseInt(document.getElementById("zahlenInput").value);
-                const feedback = document.getElementById("zahlenFeedback");
-                if (eingabe === zufallsZahl) {
-                    feedback.textContent = "Richtig! Du hast die Zahl erraten!";
-                } else if (eingabe < zufallsZahl) {
-                    feedback.textContent = "Zu niedrig! Versuch es nochmal.";
-                } else {
-                    feedback.textContent = "Zu hoch! Versuch es nochmal.";
-                }
-            }
-        </script>
-    </div>
-
-    <!-- Spiel 5: Reaktionsspiel -->
-    <div id="spiel5" class="spielbereich">
-        <h2>Reaktionsspiel</h2>
-        <p>Drücke den Button so schnell wie möglich, wenn er grün wird!</p>
-        <button id="reaktionsKnopf" disabled>Warte...</button>
-        <p id="reaktionsZeit">Reaktionszeit: --- ms</p>
-        <script>
-            let startZeit;
-            const reaktionsKnopf = document.getElementById("reaktionsKnopf");
-            const reaktionsZeit = document.getElementById("reaktionsZeit");
-
-            function starteReaktionstest() {
-                reaktionsKnopf.disabled = true;
-                reaktionsKnopf.textContent = "Warte...";
-                const zufälligeZeit = Math.random() * 3000 + 2000;
-                setTimeout(() => {
-                    startZeit = Date.now();
-                    reaktionsKnopf.disabled = false;
-                    reaktionsKnopf.textContent = "Klick!";
-                }, zufälligeZeit);
-            }
-
-            reaktionsKnopf.addEventListener("click", () => {
-                const dauer = Date.now() - startZeit;
-                reaktionsZeit.textContent = `Reaktionszeit: ${dauer} ms`;
-                starteReaktionstest();
-            });
-
-            starteReaktionstest();
-        </script>
+    <div id="visitor-counter">
+        <p>Besucherzähler: <span id="counter">0</span></p>
     </div>
 
     <script>
-        // Funktion, um Spiele umzuschalten
-        function zeigeSpiel(spielId) {
-            document.querySelectorAll('.spielbereich').forEach(spiel => spiel.classList.remove('aktiv'));
-            document.getElementById(spielId).classList.add('aktiv');
-        }
-        zeigeSpiel('spiel1'); // Standardmäßig das Klickspiel anzeigen
+        // Besucherzähler
+        const counterElement = document.getElementById('counter');
+        const visitCount = localStorage.getItem('page_view') || 0;
+        const newCount = parseInt(visitCount) + 1;
+        localStorage.setItem('page_view', newCount);
+        counterElement.textContent = newCount;
     </script>
+
+    <footer>
+        <p>© 2025 Meine Spiele-Seite</p>
+    </footer>
 </body>
 </html>
